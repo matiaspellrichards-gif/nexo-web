@@ -3,187 +3,308 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tu Casa Nexo · Decisiones</title>
+  <title>Tu Casa Nexo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --beige:#cea27c; --marron:#553f31; --negro:#0d0502; --fondo:#f9f8f6;
-      --card:#ffffff; --linea:#eadfd4; --texto:#241915; --suave:#77675d;
-      --ok:#6f7d58; --eval:#b58031; --adic:#8b4d3c;
+    :root {
+      --marron:#553f31;
+      --negro:#0d0502;
+      --beige:#cea27c;
+      --fondo:#f9f8f6;
+      --blanco:#ffffff;
+      --linea:#eadfd4;
+      --texto:#201611;
+      --suave:#75655b;
+      --ok:#697a55;
+      --eval:#b27a2c;
+      --rev:#8a5846;
     }
     *{box-sizing:border-box}
     html,body{margin:0;padding:0;background:var(--fondo);color:var(--texto);font-family:"DM Sans",Arial,sans-serif;line-height:1.45}
-    .wrap{width:min(1120px,100%);margin:0 auto;padding:18px}
-    header{background:var(--beige);color:var(--negro);padding:26px 18px 34px;border-bottom-left-radius:30px;border-bottom-right-radius:30px}
-    .header-inner{width:min(1120px,100%);margin:0 auto}
-    .logo{display:flex;align-items:center;gap:12px;margin-bottom:34px}
-    .logo-mark{width:54px;height:54px;border:1.6px solid rgba(13,5,2,.8);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:500;letter-spacing:-.04em}
-    .logo-text{font-family:"Scale VF","DM Sans",Arial,sans-serif;font-size:34px;line-height:1;font-weight:500;letter-spacing:-.05em}
-    .brand-sub{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(13,5,2,.7);margin-top:4px}
-    h1{font-family:"Scale VF","DM Sans",Arial,sans-serif;margin:0 0 12px;font-size:clamp(42px,7vw,92px);line-height:.9;font-weight:500;letter-spacing:-.06em;color:var(--negro);max-width:850px}
-    .intro{margin:0;max-width:720px;font-size:18px;color:rgba(13,5,2,.78)}
-    .card{background:var(--card);border:1px solid var(--linea);border-radius:24px;padding:20px;margin:18px 0;box-shadow:0 8px 22px rgba(85,63,49,.06)}
-    h2{font-family:"Scale VF","DM Sans",Arial,sans-serif;font-size:26px;margin:0 0 14px;color:var(--marron);font-weight:500;letter-spacing:-.03em}
-    .project{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-    .field{background:#fbf7f3;border:1px solid var(--linea);border-radius:17px;padding:13px;min-height:74px}
-    .label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--suave);margin-bottom:6px}
-    .editable{min-height:24px;outline:none;border-radius:8px;font-size:16px}
+    body{min-height:100vh}
+    .hero{
+      min-height:72vh;
+      background-image:linear-gradient(to bottom,rgba(13,5,2,.28),rgba(13,5,2,.18),rgba(13,5,2,.62)),url("assets/img/hero.jpg");
+      background-size:cover;
+      background-position:center;
+      color:var(--fondo);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:32px 18px;
+    }
+    .hero-logo{display:flex;flex-direction:column;align-items:center;gap:10px;text-shadow:0 10px 28px rgba(0,0,0,.32)}
+    .logo-word{font-family:"Scale VF","DM Sans",Arial,sans-serif;font-size:clamp(58px,12vw,132px);line-height:.82;letter-spacing:-.08em;font-weight:500}
+    .logo-sub{font-size:clamp(15px,2.2vw,24px);letter-spacing:.16em;text-transform:uppercase}
+    .wrap{width:min(1120px,100%);margin:0 auto;padding:26px 18px 72px}
+    .intro{max-width:760px;margin:36px auto 30px;text-align:center}
+    h1{font-family:"Scale VF","DM Sans",Arial,sans-serif;font-size:clamp(46px,8vw,92px);line-height:.92;letter-spacing:-.065em;font-weight:500;color:var(--marron);margin:0 0 18px}
+    .intro p{font-size:18px;color:var(--suave);margin:0 auto;max-width:680px}
+    .project-card{background:var(--blanco);border:1px solid var(--linea);border-radius:28px;padding:22px;margin:24px auto 26px;box-shadow:0 10px 28px rgba(85,63,49,.06)}
+    .project-grid{display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:12px}
+    .field{background:#fbf7f3;border:1px solid var(--linea);border-radius:18px;padding:14px}
+    .label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--suave);margin-bottom:6px}
+    .editable{outline:none;min-height:24px;font-size:17px;border-radius:8px}
     .editable:focus{background:white;box-shadow:0 0 0 2px rgba(206,162,124,.45)}
-    .progress{height:12px;background:#eee6de;border-radius:999px;overflow:hidden;margin:10px 0 12px}
-    .progress>div{height:100%;width:0%;background:var(--beige);transition:.2s}
-    .resumen{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:8px 12px;font-size:13px;background:#f4ece5;border:1px solid var(--linea)}
-    .section-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:18px}
-    details.section-card{background:white;border:1px solid var(--linea);border-radius:26px;overflow:hidden;box-shadow:0 8px 22px rgba(85,63,49,.06)}
-    summary.section-cover{list-style:none;cursor:pointer;min-height:260px;position:relative;display:flex;align-items:flex-end;padding:0;color:white;overflow:hidden}
-    summary.section-cover::-webkit-details-marker{display:none}
+    .progress{height:12px;background:#eee6de;border-radius:999px;overflow:hidden;margin:12px 0}
+    .progress div{height:100%;width:0;background:var(--beige);transition:.2s}
+    .stats{display:flex;gap:10px;flex-wrap:wrap}
+    .pill{border:1px solid var(--linea);background:#f4ece5;border-radius:999px;padding:8px 12px;font-size:13px;color:var(--marron)}
+    .section-title{font-family:"Scale VF","DM Sans",Arial,sans-serif;font-size:34px;line-height:1;letter-spacing:-.05em;font-weight:500;color:var(--marron);margin:34px 0 18px}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    details.rubro{background:white;border:1px solid var(--linea);border-radius:30px;overflow:hidden;box-shadow:0 10px 26px rgba(85,63,49,.06)}
+    summary.cover{list-style:none;cursor:pointer;min-height:320px;position:relative;display:flex;align-items:flex-end;color:white;overflow:hidden}
+    summary.cover::-webkit-details-marker{display:none}
     .cover-bg{position:absolute;inset:0;background-size:cover;background-position:center;transform:scale(1.01)}
-    .cover-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(13,5,2,.78),rgba(13,5,2,.18),rgba(13,5,2,.08))}
+    .cover-bg:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(13,5,2,.78),rgba(13,5,2,.22),rgba(13,5,2,.06))}
     .cover-content{position:relative;z-index:1;width:100%;padding:22px}
-    .cover-kicker{font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.82;margin-bottom:8px}
-    .cover-title{font-family:"Scale VF","DM Sans",Arial,sans-serif;font-size:38px;line-height:.96;letter-spacing:-.05em;font-weight:500;margin-bottom:10px}
-    .cover-desc{font-size:15px;max-width:450px;opacity:.86;margin-bottom:18px}
-    .cover-bottom{display:flex;justify-content:space-between;gap:12px;align-items:center}
-    .cover-stats{display:flex;gap:8px;flex-wrap:wrap}
-    .mini-pill{background:rgba(249,248,246,.18);border:1px solid rgba(249,248,246,.26);border-radius:999px;padding:6px 10px;font-size:12px;backdrop-filter:blur(4px)}
-    .open-label{background:var(--beige);color:var(--negro);border-radius:999px;padding:9px 13px;font-size:13px;white-space:nowrap;font-weight:600}
-    details[open] .open-label::before{content:"Cerrar "}
-    details:not([open]) .open-label::before{content:"Abrir "}
-    .section-body{padding:18px 20px 22px;background:white}
-    .reference-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
-    .ref-card{min-height:130px;border-radius:18px;background-size:cover;background-position:center;position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:12px;color:white;font-size:13px;font-weight:600}
-    .ref-card::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(13,5,2,.65),rgba(13,5,2,.05))}
-    .ref-card span{position:relative;z-index:1}
-    .decision{border-top:1px solid var(--linea);padding:15px 0}
-    .decision:first-of-type{border-top:0}
-    .decision-title{font-size:17px;font-weight:700;color:var(--texto);margin-bottom:6px}
-    .badge-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
-    .estado-badge{display:inline-block;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:700}
-    .estado-definido{background:#e8efdf;color:var(--ok)}
-    .estado-evaluacion{background:#f7ead3;color:#9b7220}
-    .estado-pendiente{background:#eeeeee;color:#777}
-    .impacto-base{background:#f0e6dd;color:var(--marron)}
-    .impacto-variable{background:#efe6d1;color:#8a6425}
-    .impacto-adicional{background:#f0ded8;color:var(--adic)}
-    .controls{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
-    select,textarea,input{width:100%;font-family:inherit;font-size:15px;border:1px solid var(--linea);background:#fff;border-radius:15px;padding:11px;color:var(--texto)}
-    textarea{min-height:74px;resize:vertical;margin-top:10px}
-    .img-row{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}
-    .preview{min-height:120px;border:1px dashed var(--linea);border-radius:17px;display:flex;align-items:center;justify-content:center;color:var(--suave);font-size:14px;background:#fbf7f3;overflow:hidden}
-    .preview img{width:100%;height:auto;display:block}
-    .actions{position:sticky;bottom:0;z-index:5;background:rgba(249,248,246,.96);border-top:1px solid var(--linea);padding:10px 0;display:grid;grid-template-columns:1fr 1fr;gap:8px;backdrop-filter:blur(6px);margin-top:18px}
-    button{border:0;border-radius:999px;padding:13px 14px;font-family:inherit;font-size:14px;background:var(--marron);color:#fff;cursor:pointer}
-    button.secondary{background:#fff;color:var(--marron);border:1px solid var(--linea)}
-    .note{font-size:13px;color:var(--suave);margin-top:9px}
-    .historial textarea{min-height:120px}
-    @media(max-width:820px){.project{grid-template-columns:1fr 1fr}.section-grid{grid-template-columns:1fr}summary.section-cover{min-height:235px}.reference-strip{grid-template-columns:1fr}.ref-card{min-height:150px}}
-    @media(max-width:560px){.wrap{padding:12px}header{padding:22px 16px 28px;border-bottom-left-radius:24px;border-bottom-right-radius:24px}.logo-mark{width:48px;height:48px;font-size:18px}.logo-text{font-size:30px}h1{font-size:44px}.intro{font-size:16px}.project,.controls,.actions{grid-template-columns:1fr}.card{padding:16px;border-radius:20px}summary.section-cover{min-height:225px}.cover-content{padding:18px}.cover-title{font-size:33px}.cover-bottom{align-items:flex-start;flex-direction:column}.section-body{padding:15px}}
-    @media print{.actions,input[type=file],button{display:none!important}details.section-card{break-inside:avoid}details:not([open]) .section-body{display:block}summary.section-cover{min-height:180px}}
+    .num{font-size:12px;letter-spacing:.13em;text-transform:uppercase;opacity:.78;margin-bottom:8px}
+    .cover-title{font-family:"Scale VF","DM Sans",Arial,sans-serif;font-size:42px;line-height:.9;letter-spacing:-.06em;font-weight:500;margin-bottom:12px}
+    .cover-desc{font-size:14px;opacity:.9;min-height:42px}
+    .cover-bottom{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:18px}
+    .mini-stats{display:flex;gap:6px;flex-wrap:wrap}
+    .mini{background:rgba(249,248,246,.17);border:1px solid rgba(249,248,246,.25);border-radius:999px;padding:6px 10px;font-size:12px;backdrop-filter:blur(3px)}
+    .open{background:var(--beige);color:var(--negro);border-radius:999px;padding:9px 13px;font-size:13px;font-weight:700;white-space:nowrap}
+    details[open] .open:before{content:"Cerrar "}
+    details:not([open]) .open:before{content:"Abrir "}
+    .body{padding:22px;background:white}
+    .block{border-top:1px solid var(--linea);padding-top:20px;margin-top:20px}
+    .block:first-child{border-top:0;padding-top:0;margin-top:0}
+    h3{font-family:"Scale VF","DM Sans",Arial,sans-serif;font-size:28px;line-height:1;letter-spacing:-.045em;font-weight:500;color:var(--marron);margin:0 0 14px}
+    .base-list{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+    .base-list li{background:#fbf7f3;border:1px solid var(--linea);border-radius:16px;padding:12px 13px}
+    .nota{color:var(--suave);font-size:14px;margin-top:12px}
+    .refs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .ref{height:170px;border-radius:20px;background-size:cover;background-position:center;position:relative;overflow:hidden}
+    .ref:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(13,5,2,.55),rgba(13,5,2,.02))}
+    .decisions{display:grid;gap:14px}
+    .decision{border:1px solid var(--linea);border-radius:20px;padding:14px;background:#fff}
+    .decision-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:10px}
+    .decision-title{font-weight:700;font-size:17px}
+    .badges{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+    .badge{border-radius:999px;padding:5px 9px;font-size:12px;font-weight:700;white-space:nowrap}
+    .pendiente{background:#eee;color:#777}
+    .evaluacion{background:#f7ead3;color:var(--eval)}
+    .definido{background:#e7efdc;color:var(--ok)}
+    .revisar{background:#f0ded8;color:var(--rev)}
+    .base{background:#f0e6dd;color:var(--marron)}
+    .recotizar{background:#f0ded8;color:var(--rev)}
+    .controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+    select,textarea,input{width:100%;font-family:inherit;font-size:15px;border:1px solid var(--linea);border-radius:15px;background:white;color:var(--texto);padding:10px}
+    textarea{min-height:78px;margin-top:10px;resize:vertical}
+    .comments{display:grid;gap:10px}
+    .comment{border:1px solid var(--linea);background:#fbf7f3;border-radius:18px;padding:12px}
+    .comment strong{color:var(--marron)}
+    .actions{position:sticky;bottom:0;z-index:5;background:rgba(249,248,246,.96);border-top:1px solid var(--linea);padding:10px 0;margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:8px;backdrop-filter:blur(6px)}
+    button{border:0;border-radius:999px;padding:13px 14px;font-family:inherit;font-size:14px;background:var(--marron);color:white;cursor:pointer}
+    button.secondary{background:white;color:var(--marron);border:1px solid var(--linea)}
+    @media(max-width:980px){.cards{grid-template-columns:repeat(2,1fr)}.project-grid{grid-template-columns:1fr 1fr}.controls{grid-template-columns:1fr}}
+    @media(max-width:640px){
+      .hero{min-height:58vh}
+      .wrap{padding:20px 12px 70px}
+      .intro{text-align:left;margin:30px 0 24px}
+      .intro p{font-size:16px}
+      .project-grid,.cards,.refs,.actions{grid-template-columns:1fr}
+      .project-card{border-radius:24px;padding:16px}
+      summary.cover{min-height:250px}
+      .cover-title{font-size:38px}
+      .body{padding:16px}
+      .decision-head{flex-direction:column}
+      .badges{justify-content:flex-start}
+    }
+    @media print{
+      .actions,button{display:none!important}
+      details.rubro{break-inside:avoid}
+      details:not([open]) .body{display:block}
+    }
   </style>
 </head>
 <body>
-<header>
-  <div class="header-inner">
-    <div class="logo" aria-label="Nexo">
-      <div class="logo-mark">Ne</div>
-      <div><div class="logo-text">Nexo</div><div class="brand-sub">Taller de casas</div></div>
-    </div>
-    <h1>Tu Casa Nexo</h1>
-    <p class="intro">Un espacio para recorrer las decisiones de proyecto, ver referencias, registrar acuerdos y definir cada detalle antes del inicio de obra.</p>
-  </div>
-</header>
-
-<div class="wrap">
-  <section class="card">
-    <h2>Información del proyecto</h2>
-    <div class="project">
-      <div class="field"><div class="label">Proyecto</div><div class="editable" contenteditable="true" data-key="proyecto">Casa de Juli y Nico</div></div>
-      <div class="field"><div class="label">Ubicación</div><div class="editable" contenteditable="true" data-key="ubicacion">San Martín de los Andes</div></div>
-      <div class="field"><div class="label">Estado</div><div class="editable" contenteditable="true" data-key="estadoProyecto">Proyecto en desarrollo</div></div>
-      <div class="field"><div class="label">Fecha</div><div class="editable" contenteditable="true" data-key="fecha">Mayo 2026</div></div>
+  <section class="hero">
+    <div class="hero-logo">
+      <div class="logo-word">Nexo</div>
+      <div class="logo-sub">Taller de casas</div>
     </div>
   </section>
 
-  <section class="card">
-    <h2>Progreso de decisiones</h2>
-    <div class="progress"><div id="bar"></div></div>
-    <div class="resumen">
-      <span class="pill"><strong id="definidas">0</strong> definidas</span>
-      <span class="pill"><strong id="evaluacion">0</strong> en evaluación</span>
-      <span class="pill"><strong id="pendientes">0</strong> pendientes</span>
+  <main class="wrap">
+    <section class="intro">
+      <h1>Tu Casa Nexo</h1>
+      <p>Este espacio nos permitirá registrar las decisiones, referencias y observaciones necesarias para desarrollar tu proyecto. Nuestro objetivo es que todas las definiciones estén resueltas antes del inicio de obra para garantizar un proceso eficiente y previsible.</p>
+    </section>
+
+    <section class="project-card">
+      <div class="project-grid">
+        <div class="field"><div class="label">Proyecto</div><div class="editable" contenteditable="true" data-key="proyecto">Casa de Juli y Nico</div></div>
+        <div class="field"><div class="label">Etapa actual</div><div class="editable" contenteditable="true" data-key="etapa">Proyecto</div></div>
+        <div class="field"><div class="label">Estado general</div><div class="editable" contenteditable="true" data-key="estado">En desarrollo</div></div>
+      </div>
+      <div class="progress"><div id="bar"></div></div>
+      <div class="stats">
+        <span class="pill"><strong id="definidas">0</strong> definidas</span>
+        <span class="pill"><strong id="evaluacion">0</strong> en evaluación</span>
+        <span class="pill"><strong id="pendientes">0</strong> pendientes</span>
+        <span class="pill"><strong id="revisar">0</strong> a revisar</span>
+      </div>
+    </section>
+
+    <h2 class="section-title">Decisiones de proyecto</h2>
+    <section class="cards" id="rubros"></section>
+
+    <div class="actions">
+      <button onclick="window.print()">Imprimir / guardar PDF</button>
+      <button class="secondary" onclick="exportar()">Exportar registro</button>
     </div>
-    <p class="note">Tocá cada rubro para abrirlo. Los cambios se guardan automáticamente en este navegador.</p>
-  </section>
-
-  <main class="section-grid" id="sections"></main>
-
-  <section class="card historial">
-    <h2>Historial / notas generales</h2>
-    <textarea data-key="historial" placeholder="Ej: 15/06 · Se define chapa gris pizarra. 20/06 · Queda pendiente calefacción."></textarea>
-  </section>
-
-  <div class="actions">
-    <button onclick="window.print()">Imprimir / guardar PDF</button>
-    <button class="secondary" onclick="exportar()">Exportar registro</button>
-  </div>
-</div>
+  </main>
 
 <script>
-const coverImages={
-"Revestimiento exterior":"linear-gradient(135deg, rgba(85,63,49,.35), rgba(13,5,2,.35)), url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1600&auto=format&fit=crop')",
-"Revestimiento interior":"linear-gradient(135deg, rgba(85,63,49,.28), rgba(13,5,2,.35)), url('https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=1600&auto=format&fit=crop')",
-"Cocina":"linear-gradient(135deg, rgba(85,63,49,.28), rgba(13,5,2,.35)), url('https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?q=80&w=1600&auto=format&fit=crop')",
-"Baños":"linear-gradient(135deg, rgba(85,63,49,.28), rgba(13,5,2,.35)), url('https://images.unsplash.com/photo-1620626011761-996317b8d101?q=80&w=1600&auto=format&fit=crop')",
-"Lavadero":"linear-gradient(135deg, rgba(85,63,49,.28), rgba(13,5,2,.35)), url('https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?q=80&w=1600&auto=format&fit=crop')",
-"Calefacción":"linear-gradient(135deg, rgba(85,63,49,.28), rgba(13,5,2,.35)), url('https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?q=80&w=1600&auto=format&fit=crop')",
-"Servicios disponibles":"linear-gradient(135deg, rgba(85,63,49,.28), rgba(13,5,2,.35)), url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600&auto=format&fit=crop')"
-};
-const referenceImages={
-"Revestimiento exterior":[["Chapa + madera","https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=900&auto=format&fit=crop"],["Aberturas","https://images.unsplash.com/photo-1600607688969-a5bfcd646154?q=80&w=900&auto=format&fit=crop"],["Galería / deck","https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?q=80&w=900&auto=format&fit=crop"]],
-"Revestimiento interior":[["Machimbre","https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=900&auto=format&fit=crop"],["Pisos","https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=900&auto=format&fit=crop"],["Terminaciones","https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=900&auto=format&fit=crop"]],
-"Cocina":[["Mesadas","https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?q=80&w=900&auto=format&fit=crop"],["Muebles","https://images.unsplash.com/photo-1556909172-6ab63f18fd12?q=80&w=900&auto=format&fit=crop"],["Griferías","https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=900&auto=format&fit=crop"]],
-"Baños":[["Artefactos","https://images.unsplash.com/photo-1620626011761-996317b8d101?q=80&w=900&auto=format&fit=crop"],["Revestimientos","https://images.unsplash.com/photo-1604014237800-1c9102c219da?q=80&w=900&auto=format&fit=crop"],["Mamparas","https://images.unsplash.com/photo-1584622781564-1d987f7333c1?q=80&w=900&auto=format&fit=crop"]],
-"Lavadero":[["Equipamiento","https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?q=80&w=900&auto=format&fit=crop"],["Guardado","https://images.unsplash.com/photo-1600566752355-35792bedcfea?q=80&w=900&auto=format&fit=crop"],["Instalaciones","https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?q=80&w=900&auto=format&fit=crop"]],
-"Calefacción":[["Sistema","https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?q=80&w=900&auto=format&fit=crop"],["Ubicación","https://images.unsplash.com/photo-1600210491369-e753d80a41f3?q=80&w=900&auto=format&fit=crop"],["Preinstalación","https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=900&auto=format&fit=crop"]],
-"Servicios disponibles":[["Lote","https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=900&auto=format&fit=crop"],["Accesos","https://images.unsplash.com/photo-1473773508845-188df298d2d1?q=80&w=900&auto=format&fit=crop"],["Montaje","https://images.unsplash.com/photo-1518005020951-eccb494ad742?q=80&w=900&auto=format&fit=crop"]]
-};
-const data=[
-{cat:"Revestimiento exterior",desc:"Techo, paredes, aberturas, contramarcos, zinguería y expansiones exteriores.",items:["Techo · color de chapa","Paredes · color de chapa","Paredes · madera / sector","Aberturas · color / tipo","Contramarcos · color / material","Zinguería · color","Detalles exteriores","Deck / galería / expansiones"]},
-{cat:"Revestimiento interior",desc:"Cielorrasos, paredes, pisos, zócalos, terminaciones y detalles interiores.",items:["Cielorraso · Eucalipto / Pino / Fenólico","Paredes · Eucalipto / Pino / Fenólico","Pisos · vinílico / madera / otro","Zócalos y terminaciones","Color de tapas de luz","Detalles interiores"]},
-{cat:"Cocina",desc:"Mesada, bacha, grifería, electrodomésticos, muebles y revestimiento de alzada.",items:["Mesada · Negro Brasil incluido / otro","Bacha · Johnson incluida / otra","Grifería · modelo incluido / otro","Heladera · tipo y dimensiones","Horno / Anafe · tipo y dimensiones","Revestimiento de alzada","Protección detrás de hornallas","Mueble bajo mesada y alacena","Extractor","Detalles cocina"]},
-{cat:"Baños",desc:"Artefactos, griferías, vanitory, revestimientos, ducha, bañadera y accesorios.",items:["Inodoro · Roca Monaco incluido / otro","Bidet / bidematic","Plato de ducha / bañadera","Grifería ducha y lavatorio","Bacha","Vanitory","Piso","Paredes de ducha","Mampara de ducha","Accesorios"]},
-{cat:"Lavadero",desc:"Lavarropas, termotanque, pileta, mueble de guardado y conexiones.",items:["Lavarropas · modelo / dimensiones","Termotanque · tipo / ubicación","Pileta lavadero","Mueble / guardado","Conexión lavarropas"]},
-{cat:"Calefacción",desc:"Sistema, ubicación de equipos, salidas, ventilaciones y preinstalaciones.",items:["Sistema de calefacción","Ubicación de equipos","Salida de humos / ventilaciones","Preinstalaciones necesarias"]},
-{cat:"Servicios disponibles",desc:"Disponibilidad y resolución de agua, electricidad, gas, cloaca, accesos y montaje.",items:["Agua","Electricidad","Gas","Cloaca / lecho nitrificante","Accesos al lote","Movimiento de suelo","Traslado y montaje"]}
-];
-function keyFor(cat,item,suf){return(cat+"_"+item+"_"+suf).replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]+/g,'_')}
-function sectionCounts(sec){let def=0,eva=0,pen=0;sec.items.forEach(item=>{const v=localStorage.getItem('nexo_'+keyFor(sec.cat,item,'estado'))||'Pendiente';if(v==='Definido')def++;else if(v==='En evaluación')eva++;else pen++});return{def,eva,pen,total:sec.items.length}}
+const categories = [{"slug": "exterior", "title": "Exterior", "desc": "Revestimientos, aberturas, contramarcos, cubierta, deck y expansión exterior.", "base": ["Chapa sinusoidal prepintada según colores disponibles", "Entablonado vertical de pino impregnado en sectores definidos", "Contramarcos y zinguería según propuesta base"], "items": ["Revestimiento de paredes", "Color de chapa", "Sectores de madera", "Aberturas y color", "Contramarcos", "Zinguería", "Deck / galería / expansión"]}, {"slug": "interior", "title": "Interior", "desc": "Revestimientos interiores, cielorrasos, pisos, zócalos y terminaciones generales.", "base": ["Machimbre de eucalipto en paredes y cielorraso", "Piso vinílico SPC según catálogo", "Zócalos y terminaciones de eucalipto"], "items": ["Paredes interiores", "Cielorrasos", "Pisos", "Zócalos", "Tapas de luz", "Terminaciones interiores"]}, {"slug": "cocina", "title": "Cocina", "desc": "Mesada, bacha, grifería, muebles, alzada, extractor y electrodomésticos.", "base": ["Mesada Negro Brasil", "Bacha Johnson incluida en propuesta base", "Grifería FV según línea cotizada", "Mueble bajo mesada y alacena de fabricación Nexo"], "items": ["Mesada", "Bacha", "Grifería", "Alzada", "Mueble bajo mesada", "Alacena", "Extractor", "Horno / anafe", "Heladera"]}, {"slug": "banos", "title": "Baños", "desc": "Artefactos, griferías, vanitory, ducha, bañera, mampara y revestimientos.", "base": ["Artefactos sanitarios según cotización inicial", "Griferías FV línea cotizada", "Vanitory de fabricación Nexo", "Revestimiento cerámico en sectores cotizados"], "items": ["Inodoro", "Bidet / bidematic", "Griferías", "Vanitory", "Bacha", "Piso", "Revestimiento ducha", "Mampara", "Ducha / bañera"]}, {"slug": "lavadero", "title": "Lavadero", "desc": "Mesada, pileta, guardado, termotanque, lavarropas y conexiones necesarias.", "base": ["Mesada de tablero de eucalipto", "Pileta simple según cotización", "Mueble de guardado según propuesta base"], "items": ["Pileta lavadero", "Grifería", "Mueble de guardado", "Termotanque", "Lavarropas", "Conexiones"]}, {"slug": "dormitorio", "title": "Dormitorio", "desc": "Placards, guardado, mobiliario fijo, escritorios y detalles de uso cotidiano.", "base": ["Placard según configuración cotizada", "Barrales, estantes y cajoneras según propuesta base"], "items": ["Placard", "Distribución interior", "Puertas de placard", "Cajoneras", "Estantes", "Mobiliario fijo"]}, {"slug": "puertas", "title": "Puertas", "desc": "Puertas exteriores, interiores, corredizas, vidriadas y alternativas especiales.", "base": ["Puerta exterior fabricada en taller", "Puertas interiores de machimbre de eucalipto según cotización"], "items": ["Puerta exterior", "Puertas interiores", "Puertas corredizas", "Puertas vidriadas", "Herrajes", "Terminación / color"]}, {"slug": "calefaccion", "title": "Calefacción", "desc": "Sistema de calefacción, ubicación de equipos, salidas, ventilaciones y preinstalaciones.", "base": ["Sistema a definir según proyecto, lote y disponibilidad de servicios"], "items": ["Sistema de calefacción", "Ubicación de equipos", "Salidas / ventilaciones", "Preinstalaciones", "Impacto en instalaciones"]}, {"slug": "equipamiento", "title": "Equipamiento", "desc": "Elementos complementarios, iluminación, cortinas, accesorios y mobiliario adicional.", "base": ["No todo el equipamiento está incluido en la cotización inicial. Se define según proyecto y etapa."], "items": ["Artefactos de iluminación", "Cortinas", "Accesorios baño", "Accesorios cocina", "Mobiliario fijo adicional", "Equipamiento exterior"]}];
+const refs = {"exterior": ["exterior_ref_1.jpg", "exterior_ref_2.jpg", "exterior_ref_3.jpg"], "interior": ["interior_ref_1.jpg", "interior_ref_2.jpg", "interior_ref_3.jpg"], "cocina": ["cocina_ref_1.jpg", "cocina_ref_2.jpg", "cocina_ref_3.jpg"], "banos": ["banos_ref_1.jpg", "banos_ref_2.jpg", "banos_ref_3.jpg"], "lavadero": ["lavadero_cover.jpg", "lavadero_cover.jpg", "lavadero_cover.jpg"], "dormitorio": ["dormitorio_ref_1.jpg", "dormitorio_ref_2.jpg", "dormitorio_ref_3.jpg"], "puertas": ["puertas_ref_1.jpg", "puertas_ref_2.jpg", "puertas_ref_3.jpg"], "calefaccion": ["calefaccion_ref_1.jpg", "calefaccion_ref_2.jpg", "calefaccion_ref_3.jpg"], "equipamiento": ["equipamiento_ref_1.jpg", "equipamiento_ref_2.jpg", "equipamiento_ref_3.jpg"]};
+const selected = {"hero": "hero.jpg", "exterior": "exterior_cover.jpg", "interior": "interior_cover.jpg", "cocina": "cocina_cover.jpg", "banos": "banos_cover.jpg", "lavadero": "lavadero_cover.jpg", "dormitorio": "dormitorio_cover.jpg", "puertas": "puertas_cover.jpg", "calefaccion": "calefaccion_cover.jpg", "equipamiento": "equipamiento_cover.jpg"};
+
+function keyFor(cat,item,suf){return (cat+"_"+item+"_"+suf).replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]+/g,'_')}
+
 function render(){
- const root=document.getElementById('sections'); root.innerHTML='';
- data.forEach(sec=>{
-  const counts=sectionCounts(sec);
-  const d=document.createElement('details'); d.className='section-card';
-  d.innerHTML=`<summary class="section-cover"><div class="cover-bg" style="background-image:${coverImages[sec.cat]};"></div><div class="cover-content"><div class="cover-kicker">Decisiones de proyecto</div><div class="cover-title">${sec.cat}</div><div class="cover-desc">${sec.desc}</div><div class="cover-bottom"><div class="cover-stats"><span class="mini-pill" data-sec-def="${sec.cat}">${counts.def} definidas</span><span class="mini-pill" data-sec-eva="${sec.cat}">${counts.eva} en evaluación</span><span class="mini-pill" data-sec-pen="${sec.cat}">${counts.pen} pendientes</span></div><span class="open-label">rubro</span></div></div></summary><div class="section-body"><div class="reference-strip">${(referenceImages[sec.cat]||[]).map(([label,url])=>`<div class="ref-card" style="background-image:url('${url}')"><span>${label}</span></div>`).join('')}</div></div>`;
-  const body=d.querySelector('.section-body');
-  sec.items.forEach(item=>{
-   const kEstado=keyFor(sec.cat,item,'estado'), kImpacto=keyFor(sec.cat,item,'impacto'), kObs=keyFor(sec.cat,item,'obs'), kImg=keyFor(sec.cat,item,'img');
-   const div=document.createElement('div'); div.className='decision';
-   div.innerHTML=`<div class="decision-title">${item}</div><div class="badge-row"><span class="estado-badge estado-pendiente" data-badge="${kEstado}">Pendiente</span><span class="estado-badge impacto-base" data-impactobadge="${kImpacto}">Base</span></div><div class="controls"><select data-key="${kEstado}" data-type="estado" data-cat="${sec.cat}"><option value="Pendiente">Pendiente</option><option value="En evaluación">En evaluación</option><option value="Definido">Definido</option></select><select data-key="${kImpacto}" data-type="impacto"><option value="Base">Base</option><option value="Variable">Variable</option><option value="Adicional">Adicional</option></select></div><textarea data-key="${kObs}" placeholder="Observaciones, marcas, modelos, colores, acuerdos o dudas pendientes..."></textarea><div class="img-row"><input type="file" accept="image/*" data-img="${kImg}"><div class="preview" data-preview="${kImg}">Imagen de referencia</div></div>`;
-   body.appendChild(div);
+  const root=document.getElementById('rubros');
+  root.innerHTML='';
+  categories.forEach((cat,idx)=>{
+    const details=document.createElement('details');
+    details.className='rubro';
+    const cover=selected[cat.slug] || selected.hero;
+    details.innerHTML=`
+      <summary class="cover">
+        <div class="cover-bg" style="background-image:url('assets/img/${cover}')"></div>
+        <div class="cover-content">
+          <div class="num">${String(idx+1).padStart(2,'0')} · Rubro</div>
+          <div class="cover-title">${cat.title}</div>
+          <div class="cover-desc">${cat.desc}</div>
+          <div class="cover-bottom">
+            <div class="mini-stats">
+              <span class="mini" data-cat-def="${cat.slug}">0 definidas</span>
+              <span class="mini" data-cat-eval="${cat.slug}">0 en evaluación</span>
+            </div>
+            <span class="open">rubro</span>
+          </div>
+        </div>
+      </summary>
+      <div class="body">
+        <div class="block">
+          <h3>Configuración Base Nexo</h3>
+          <ul class="base-list">${cat.base.map(x=>`<li>${x}</li>`).join('')}</ul>
+          <p class="nota">Esta es la propuesta base tomada como punto de partida para la cotización inicial. Cada punto puede personalizarse durante el proceso de proyecto; cuando una modificación cambia el alcance o el producto previsto, puede requerir recotización.</p>
+        </div>
+        <div class="block">
+          <h3>Referencias</h3>
+          <div class="refs">${(refs[cat.slug]||[]).map(img=>`<div class="ref" style="background-image:url('assets/img/${img}')"></div>`).join('')}</div>
+        </div>
+        <div class="block">
+          <h3>Decisiones del proyecto</h3>
+          <div class="decisions"></div>
+        </div>
+        <div class="block">
+          <h3>Conversaciones</h3>
+          <div class="comments">
+            <div class="comment"><strong>Cliente</strong><br><textarea data-key="${cat.slug}_comentario_cliente" placeholder="Anotar preferencias, dudas o referencias que quieran revisar..."></textarea></div>
+            <div class="comment"><strong>Nexo</strong><br><textarea data-key="${cat.slug}_comentario_nexo" placeholder="Aclaraciones, criterios técnicos, impacto en presupuesto o temas para próxima reunión..."></textarea></div>
+          </div>
+        </div>
+      </div>`;
+    const box=details.querySelector('.decisions');
+    cat.items.forEach(item=>{
+      const kEstado=keyFor(cat.slug,item,'estado');
+      const kImpacto=keyFor(cat.slug,item,'impacto');
+      const kMomento=keyFor(cat.slug,item,'momento');
+      const kObs=keyFor(cat.slug,item,'obs');
+      const div=document.createElement('div');
+      div.className='decision';
+      div.innerHTML=`
+        <div class="decision-head">
+          <div class="decision-title">${item}</div>
+          <div class="badges">
+            <span class="badge pendiente" data-badge="${kEstado}">Pendiente</span>
+            <span class="badge base" data-impacto="${kImpacto}">Sin cambios</span>
+          </div>
+        </div>
+        <div class="controls">
+          <select data-key="${kEstado}" data-type="estado" data-cat="${cat.slug}">
+            <option>Pendiente</option>
+            <option>En evaluación</option>
+            <option>Definido</option>
+            <option>Revisar</option>
+          </select>
+          <select data-key="${kImpacto}" data-type="impacto">
+            <option>Sin cambios</option>
+            <option>Requiere recotización</option>
+            <option>Adicional aprobado</option>
+          </select>
+          <select data-key="${kMomento}">
+            <option>Antes de construcción</option>
+            <option>Durante proyecto</option>
+            <option>Antes de entrega</option>
+            <option>Postventa</option>
+          </select>
+        </div>
+        <textarea data-key="${kObs}" placeholder="Observaciones, marcas, modelos, colores, acuerdos o dudas pendientes..."></textarea>`;
+      box.appendChild(div);
+    });
+    root.appendChild(details);
   });
-  root.appendChild(d);
- });
 }
-function saveKey(el){const key=el.dataset.key;if(!key)return;localStorage.setItem('nexo_'+key,el.isContentEditable?el.innerText:el.value)}
-function loadAll(){document.querySelectorAll('[data-key]').forEach(el=>{const val=localStorage.getItem('nexo_'+el.dataset.key);if(val!==null){if(el.isContentEditable)el.innerText=val;else el.value=val}});document.querySelectorAll('[data-preview]').forEach(p=>{const val=localStorage.getItem('nexo_'+p.dataset.preview);if(val){p.innerHTML=`<img src="${val}" alt="Referencia">`}});updateBadges();updateProgress()}
-function updateBadges(){document.querySelectorAll('select[data-type="estado"]').forEach(sel=>{const badge=document.querySelector(`[data-badge="${sel.dataset.key}"]`);if(!badge)return;badge.textContent=sel.value;badge.className='estado-badge '+(sel.value==='Definido'?'estado-definido':sel.value==='En evaluación'?'estado-evaluacion':'estado-pendiente')});document.querySelectorAll('select[data-type="impacto"]').forEach(sel=>{const badge=document.querySelector(`[data-impactobadge="${sel.dataset.key}"]`);if(!badge)return;badge.textContent=sel.value;badge.className='estado-badge '+(sel.value==='Adicional'?'impacto-adicional':sel.value==='Variable'?'impacto-variable':'impacto-base')})}
-function updateSectionStats(){data.forEach(sec=>{const c=sectionCounts(sec);const def=document.querySelector(`[data-sec-def="${sec.cat}"]`),eva=document.querySelector(`[data-sec-eva="${sec.cat}"]`),pen=document.querySelector(`[data-sec-pen="${sec.cat}"]`);if(def)def.textContent=`${c.def} definidas`;if(eva)eva.textContent=`${c.eva} en evaluación`;if(pen)pen.textContent=`${c.pen} pendientes`})}
-function updateProgress(){const selects=[...document.querySelectorAll('select[data-type="estado"]')];const def=selects.filter(s=>s.value==='Definido').length,eva=selects.filter(s=>s.value==='En evaluación').length,pen=selects.filter(s=>s.value==='Pendiente').length,pct=selects.length?Math.round(def/selects.length*100):0;document.getElementById('definidas').textContent=def;document.getElementById('evaluacion').textContent=eva;document.getElementById('pendientes').textContent=pen;document.getElementById('bar').style.width=pct+'%';updateSectionStats()}
-function bind(){document.addEventListener('input',e=>{if(e.target.dataset.key||e.target.isContentEditable){saveKey(e.target);updateBadges();updateProgress()}});document.addEventListener('change',e=>{if(e.target.dataset.key){saveKey(e.target);updateBadges();updateProgress()}if(e.target.dataset.img&&e.target.files&&e.target.files[0]){const reader=new FileReader(),key=e.target.dataset.img;reader.onload=ev=>{localStorage.setItem('nexo_'+key,ev.target.result);const prev=document.querySelector(`[data-preview="${key}"]`);if(prev)prev.innerHTML=`<img src="${ev.target.result}" alt="Referencia">`};reader.readAsDataURL(e.target.files[0])}});document.addEventListener('blur',e=>{if(e.target.isContentEditable)saveKey(e.target)},true)}
-function exportar(){const obj={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('nexo_'))obj[k.replace('nexo_','')]=localStorage.getItem(k)}const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='registro_decisiones_nexo.json';a.click()}
-render();bind();loadAll();
+
+function save(el){const k=el.dataset.key;if(!k)return;localStorage.setItem('nexo_v8_'+k,el.isContentEditable?el.innerText:el.value)}
+function load(){
+  document.querySelectorAll('[data-key]').forEach(el=>{
+    const v=localStorage.getItem('nexo_v8_'+el.dataset.key);
+    if(v!==null){ if(el.isContentEditable) el.innerText=v; else el.value=v; }
+  });
+  update();
+}
+function update(){
+  document.querySelectorAll('select[data-type="estado"]').forEach(sel=>{
+    const b=document.querySelector(`[data-badge="${sel.dataset.key}"]`);
+    if(!b)return;
+    b.textContent=sel.value;
+    b.className='badge '+(sel.value==='Definido'?'definido':sel.value==='En evaluación'?'evaluacion':sel.value==='Revisar'?'revisar':'pendiente');
+  });
+  document.querySelectorAll('select[data-type="impacto"]').forEach(sel=>{
+    const b=document.querySelector(`[data-impacto="${sel.dataset.key}"]`);
+    if(!b)return;
+    b.textContent=sel.value;
+    b.className='badge '+(sel.value==='Sin cambios'?'base':'recotizar');
+  });
+  const all=[...document.querySelectorAll('select[data-type="estado"]')];
+  const def=all.filter(x=>x.value==='Definido').length;
+  const eva=all.filter(x=>x.value==='En evaluación').length;
+  const rev=all.filter(x=>x.value==='Revisar').length;
+  const pen=all.filter(x=>x.value==='Pendiente').length;
+  document.getElementById('definidas').textContent=def;
+  document.getElementById('evaluacion').textContent=eva;
+  document.getElementById('pendientes').textContent=pen;
+  document.getElementById('revisar').textContent=rev;
+  document.getElementById('bar').style.width=(all.length?Math.round(def/all.length*100):0)+'%';
+  categories.forEach(cat=>{
+    const c=[...document.querySelectorAll(`select[data-cat="${cat.slug}"]`)];
+    const d=c.filter(x=>x.value==='Definido').length;
+    const e=c.filter(x=>x.value==='En evaluación').length;
+    const bd=document.querySelector(`[data-cat-def="${cat.slug}"]`);
+    const be=document.querySelector(`[data-cat-eval="${cat.slug}"]`);
+    if(bd) bd.textContent=d+' definidas';
+    if(be) be.textContent=e+' en evaluación';
+  });
+}
+document.addEventListener('input',e=>{if(e.target.dataset.key||e.target.isContentEditable){save(e.target);update();}});
+document.addEventListener('change',e=>{if(e.target.dataset.key){save(e.target);update();}});
+document.addEventListener('blur',e=>{if(e.target.isContentEditable)save(e.target)},true);
+function exportar(){
+  const obj={};
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('nexo_v8_'))obj[k.replace('nexo_v8_','')]=localStorage.getItem(k)}
+  const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tu_casa_nexo_registro.json';a.click();
+}
+render();load();
 </script>
 </body>
 </html>
