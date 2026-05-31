@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tu Casa Nexo · Decisiones</title>
+  <style>
+    :root{
+      --beige:#cea27c;
+      --marron:#553f31;
+      --negro:#0d0502;
+      --fondo:#f9f8f6;
+      --linea:#eadfd4;
+      --card:#ffffff;
+      --suave:#77675d;
+      --ok:#6f7d58;
+      --eval:#a87324;
+      --pend:#8d8985;
+      --adic:#8b4d3c;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--fondo);color:var(--negro);font-family:Arial,sans-serif;line-height:1.45}
+    header{background:var(--beige);padding:24px 16px 28px;border-bottom-left-radius:24px;border-bottom-right-radius:24px}
+    .marca{font-size:12px;text-transform:uppercase;letter-spacing:.12em;margin-bottom:18px;color:rgba(13,5,2,.72)}
+    h1{font-size:34px;line-height:1;margin:0 0 10px;font-weight:500}
+    .intro{margin:0;font-size:16px;color:rgba(13,5,2,.75)}
+    main{max-width:920px;margin:0 auto;padding:14px}
+    .card{background:var(--card);border:1px solid var(--linea);border-radius:20px;padding:16px;margin:14px 0;box-shadow:0 6px 18px rgba(85,63,49,.05)}
+    h2{margin:0 0 14px;font-size:24px;color:var(--marron);font-weight:500}
+    h3{margin:26px 0 10px;font-size:26px;color:var(--marron);font-weight:500;border-top:1px solid var(--linea);padding-top:22px}
+    h3:first-child{border-top:0;padding-top:0;margin-top:0}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .field{background:#fbf7f3;border:1px solid var(--linea);border-radius:15px;padding:12px}
+    .label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);margin-bottom:5px}
+    .editable{min-height:24px;outline:none;border-radius:8px}
+    .editable:focus{background:#fff;box-shadow:0 0 0 2px rgba(206,162,124,.45)}
+    .progress{height:12px;background:#eee6de;border-radius:999px;overflow:hidden;margin:10px 0}
+    .progress div{height:100%;width:0;background:var(--beige)}
+    .stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .stat{background:#f4ece5;border:1px solid var(--linea);border-radius:999px;padding:7px 10px;font-size:13px}
+    .decision{border:1px solid var(--linea);border-radius:18px;padding:14px;margin:12px 0;background:#fff}
+    .decision-title{font-weight:700;font-size:17px;margin-bottom:8px}
+    .badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+    .badge{border-radius:999px;padding:5px 10px;font-size:12px;font-weight:700}
+    .estado-pendiente{background:#eee;color:#777}
+    .estado-evaluacion{background:#f7ead3;color:var(--eval)}
+    .estado-definido{background:#e8efdf;color:var(--ok)}
+    .impacto-base{background:#f0e6dd;color:var(--marron)}
+    .impacto-variable{background:#efe6d1;color:#8a6425}
+    .impacto-adicional{background:#f0ded8;color:var(--adic)}
+    select,textarea,input{width:100%;font:inherit;font-size:15px;border:1px solid var(--linea);border-radius:14px;background:#fff;padding:10px;color:var(--negro)}
+    .controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    textarea{min-height:78px;resize:vertical;margin-top:9px}
+    .preview{min-height:105px;border:1px dashed var(--linea);border-radius:16px;background:#fbf7f3;margin-top:8px;display:flex;align-items:center;justify-content:center;color:var(--suave);font-size:14px;overflow:hidden}
+    .preview img{width:100%;height:auto;display:block}
+    .actions{position:sticky;bottom:0;background:rgba(249,248,246,.97);border-top:1px solid var(--linea);padding:10px 0;margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    button{border:0;border-radius:999px;padding:12px;font:inherit;background:var(--marron);color:white}
+    button.secondary{background:white;color:var(--marron);border:1px solid var(--linea)}
+    .note{font-size:13px;color:var(--suave)}
+    @media(max-width:640px){
+      main{padding:12px}
+      .grid,.controls,.actions{grid-template-columns:1fr}
+      h1{font-size:32px}
+      h2{font-size:23px}
+      h3{font-size:24px}
+      .card{padding:14px;border-radius:18px}
+    }
+    @media print{
+      .actions,input[type=file],button{display:none!important}
+      body{background:#fff}
+      .card,.decision{box-shadow:none;break-inside:avoid}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="marca">NEXO · Taller de casas</div>
+  <h1>Tu Casa Nexo</h1>
+  <p class="intro">Registro editable de decisiones de proyecto, con estados, observaciones e imágenes de referencia.</p>
+</header>
+
+<main>
+  <section class="card">
+    <h2>Información del proyecto</h2>
+    <div class="grid">
+      <div class="field"><div class="label">Proyecto</div><div class="editable" contenteditable="true" data-key="proyecto">Casa de Juli y Nico</div></div>
+      <div class="field"><div class="label">Ubicación</div><div class="editable" contenteditable="true" data-key="ubicacion">San Martín de los Andes</div></div>
+      <div class="field"><div class="label">Estado</div><div class="editable" contenteditable="true" data-key="estado">Proyecto en desarrollo</div></div>
+      <div class="field"><div class="label">Fecha</div><div class="editable" contenteditable="true" data-key="fecha">Mayo 2026</div></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Progreso de decisiones</h2>
+    <div class="progress"><div id="bar"></div></div>
+    <div class="stats">
+      <span class="stat"><strong id="def">0</strong> definidas</span>
+      <span class="stat"><strong id="eva">0</strong> en evaluación</span>
+      <span class="stat"><strong id="pen">0</strong> pendientes</span>
+    </div>
+    <p class="note">Esta versión no tiene pestañas ni desplegables: todos los rubros quedan visibles al bajar con scroll.</p>
+  </section>
+
+  <section class="card" id="decisiones"></section>
+
+  <section class="card">
+    <h2>Historial / notas generales</h2>
+    <textarea data-key="historial" placeholder="Ej: 15/06 · Se define chapa gris pizarra. 20/06 · Queda pendiente calefacción."></textarea>
+  </section>
+
+  <div class="actions">
+    <button onclick="window.print()">Imprimir / guardar PDF</button>
+    <button class="secondary" onclick="exportar()">Exportar registro</button>
+  </div>
+</main>
+
+<script>
+const secciones=[
+["Revestimiento exterior",["Techo · color de chapa","Paredes · color de chapa","Paredes · madera / sector","Aberturas · color / tipo","Contramarcos · color / material","Zinguería · color","Detalles exteriores","Deck / galería / expansiones"]],
+["Revestimiento interior",["Cielorraso · Eucalipto / Pino / Fenólico","Paredes · Eucalipto / Pino / Fenólico","Pisos · vinílico / madera / otro","Zócalos y terminaciones","Color de tapas de luz","Detalles interiores"]],
+["Cocina",["Mesada · Negro Brasil incluido / otro","Bacha · Johnson incluida / otra","Grifería · modelo incluido / otro","Heladera · tipo y dimensiones","Horno / Anafe · tipo y dimensiones","Revestimiento de alzada","Protección detrás de hornallas","Mueble bajo mesada y alacena","Extractor","Detalles cocina"]],
+["Baños",["Inodoro · Roca Monaco incluido / otro","Bidet / bidematic","Plato de ducha / bañadera","Grifería ducha y lavatorio","Bacha","Vanitory","Piso","Paredes de ducha","Mampara de ducha","Accesorios"]],
+["Lavadero",["Lavarropas · modelo / dimensiones","Termotanque · tipo / ubicación","Pileta lavadero","Mueble / guardado","Conexión lavarropas"]],
+["Calefacción",["Sistema de calefacción","Ubicación de equipos","Salida de humos / ventilaciones","Preinstalaciones necesarias"]],
+["Servicios disponibles",["Agua","Electricidad","Gas","Cloaca / lecho nitrificante","Accesos al lote","Movimiento de suelo","Traslado y montaje"]]
+];
+
+function safe(s){return s.replace(/[^a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ]+/g,"_")}
+function render(){
+ const root=document.getElementById("decisiones");
+ root.innerHTML="";
+ secciones.forEach(([cat,items])=>{
+   const h=document.createElement("h3"); h.textContent=cat; root.appendChild(h);
+   items.forEach(item=>{
+     const base=safe(cat+"_"+item);
+     const div=document.createElement("div");
+     div.className="decision";
+     div.innerHTML=`
+       <div class="decision-title">${item}</div>
+       <div class="badges">
+         <span class="badge estado-pendiente" data-badge="${base}_estado">Pendiente</span>
+         <span class="badge impacto-base" data-impacto="${base}_impacto">Base</span>
+       </div>
+       <div class="controls">
+         <select data-key="${base}_estado" data-kind="estado">
+           <option>Pendiente</option><option>En evaluación</option><option>Definido</option>
+         </select>
+         <select data-key="${base}_impacto" data-kind="impacto">
+           <option>Base</option><option>Variable</option><option>Adicional</option>
+         </select>
+       </div>
+       <textarea data-key="${base}_obs" placeholder="Observaciones, marcas, modelos, colores, acuerdos o dudas pendientes..."></textarea>
+       <input type="file" accept="image/*" data-img="${base}_img">
+       <div class="preview" data-preview="${base}_img">Imagen de referencia</div>
+     `;
+     root.appendChild(div);
+   })
+ })
+}
+function save(el){
+ const k=el.dataset.key; if(!k)return;
+ localStorage.setItem("nexo_"+k, el.isContentEditable?el.innerText:el.value);
+}
+function load(){
+ document.querySelectorAll("[data-key]").forEach(el=>{
+   const v=localStorage.getItem("nexo_"+el.dataset.key);
+   if(v!==null){ if(el.isContentEditable) el.innerText=v; else el.value=v; }
+ });
+ document.querySelectorAll("[data-preview]").forEach(el=>{
+   const v=localStorage.getItem("nexo_"+el.dataset.preview);
+   if(v) el.innerHTML=`<img src="${v}" alt="Referencia">`;
+ });
+ update();
+}
+function update(){
+ document.querySelectorAll("select[data-kind=estado]").forEach(sel=>{
+   const b=document.querySelector(`[data-badge="${sel.dataset.key}"]`);
+   if(b){b.textContent=sel.value;b.className="badge "+(sel.value=="Definido"?"estado-definido":sel.value=="En evaluación"?"estado-evaluacion":"estado-pendiente")}
+ });
+ document.querySelectorAll("select[data-kind=impacto]").forEach(sel=>{
+   const b=document.querySelector(`[data-impacto="${sel.dataset.key}"]`);
+   if(b){b.textContent=sel.value;b.className="badge "+(sel.value=="Adicional"?"impacto-adicional":sel.value=="Variable"?"impacto-variable":"impacto-base")}
+ });
+ const all=[...document.querySelectorAll("select[data-kind=estado]")];
+ const d=all.filter(x=>x.value=="Definido").length;
+ const e=all.filter(x=>x.value=="En evaluación").length;
+ const p=all.filter(x=>x.value=="Pendiente").length;
+ document.getElementById("def").textContent=d;
+ document.getElementById("eva").textContent=e;
+ document.getElementById("pen").textContent=p;
+ document.getElementById("bar").style.width=(all.length?Math.round(d/all.length*100):0)+"%";
+}
+document.addEventListener("input",e=>{if(e.target.dataset.key||e.target.isContentEditable){save(e.target);update();}});
+document.addEventListener("change",e=>{
+ if(e.target.dataset.key){save(e.target);update();}
+ if(e.target.dataset.img&&e.target.files&&e.target.files[0]){
+   const key=e.target.dataset.img; const r=new FileReader();
+   r.onload=ev=>{localStorage.setItem("nexo_"+key,ev.target.result);document.querySelector(`[data-preview="${key}"]`).innerHTML=`<img src="${ev.target.result}" alt="Referencia">`};
+   r.readAsDataURL(e.target.files[0]);
+ }
+});
+document.addEventListener("blur",e=>{if(e.target.isContentEditable)save(e.target)},true);
+function exportar(){
+ const obj={};
+ for(let i=0;i<localStorage.length;i++){
+   const k=localStorage.key(i);
+   if(k&&k.startsWith("nexo_"))obj[k.replace("nexo_","")]=localStorage.getItem(k);
+ }
+ const blob=new Blob([JSON.stringify(obj,null,2)],{type:"application/json"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="registro_decisiones_nexo.json";a.click();
+}
+render(); load();
+</script>
+</body>
+</html>
