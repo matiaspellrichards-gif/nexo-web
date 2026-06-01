@@ -134,6 +134,13 @@
   .ct-item a { color:var(--negro); text-decoration:none; font-size:13px; }
 </style>
 <script>
+// Descripciones automáticas por plano — no hace falta tocar esto
+const PLANOS = {
+  "assets/planos/plano-40m2.jpg":  "Anteproyecto 40m² · 1 Dormitorio / 1 Baño",
+  "assets/planos/plano-65m2.jpg":  "Anteproyecto 65m² · 2 Dormitorios / 1 Baño",
+  "assets/planos/plano-100m2.jpg": "Anteproyecto 100m² · 2 Dormitorios / 1 Baño completo / Toilette / Lavadero",
+};
+
 /* ═══════════════════════════════════════════════════════
    CONFIGURACIÓN DE COTIZACIÓN — editar solo este bloque
    ═══════════════════════════════════════════════════════ */
@@ -141,7 +148,7 @@ const CONFIG = {
 
   // ── Encabezado ──────────────────────────────────────
   fechaEnvio:  "15 de mayo de 2026",
-  descripcion: "Anteproyecto ~90m² · 2 Dorm / 1 Baño + Toilette",
+  // descripcion: se genera automáticamente según el plano elegido
 
   // ── Precio ──────────────────────────────────────────
   total:       "USD 58.000",
@@ -174,7 +181,7 @@ const CONFIG = {
 document.addEventListener("DOMContentLoaded", () => {
   const set = (id, val) => { const el = document.getElementById(id); if (el) el.innerHTML = val; };
   set("cfg-fecha",         CONFIG.fechaEnvio);
-  set("cfg-descripcion",   CONFIG.descripcion);
+  set("cfg-descripcion",   CONFIG.descripcion || PLANOS[CONFIG.plano] || "");
   set("cfg-total",         CONFIG.total);
   set("cfg-monto-anticipo",CONFIG.anticipo);
   set("cfg-monto-pago1",   CONFIG.pago1);
