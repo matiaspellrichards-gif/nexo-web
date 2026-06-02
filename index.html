@@ -20,7 +20,10 @@
   .base-extra{color:var(--suave)}
   .ref-link{display:inline-flex;align-items:center;gap:5px;margin:10px 0 4px;font-size:12px;font-weight:600;color:var(--marron);text-decoration:none;border-bottom:1px solid var(--linea)}
   .choice-status-inc{display:inline-block;background:#f0ece7;color:var(--marron);font-size:11px;padding:4px 10px;border-radius:6px;line-height:1.4;margin-top:4px}
-  .choice-status-extra{display:inline-block;background:#eee;color:var(--suave);font-size:11px;padding:4px 10px;border-radius:6px;line-height:1.4;margin-top:4px}</style>  <link rel="icon" type="image/png" href="assets/favicon.png?v=3">
+  .choice-status-extra{display:inline-block;background:#eee;color:var(--suave);font-size:11px;padding:4px 10px;border-radius:6px;line-height:1.4;margin-top:4px}  .btn-guardar{width:100%;margin-top:16px;padding:13px;background:var(--negro);color:white;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.3px}
+  .btn-guardar.guardado{background:var(--marron)}
+  .guardar-msg{text-align:center;font-size:12px;color:var(--marron);margin-top:8px;min-height:18px}
+</style>  <link rel="icon" type="image/png" href="assets/favicon.png?v=3">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=2">
 </head><body><section class="hero">
   <img src="assets/img/hero.jpg" alt="">
@@ -65,14 +68,35 @@ cat.items.forEach(([item,base])=>{
   const div=document.createElement('div');div.className='choice';
   div.innerHTML=`<div class="choice-head">
     <div><div class="choice-title">${item}</div>
-    <span class="${extra?'choice-status-extra':'choice-status-inc'}">${extra?'⚠ A cotizar por separado':'✓ Opción base: '+base}</span></div>
+    <span class="${extra?'choice-status-extra':'choice-status-inc'}">${extra?'⚠ A cotizar según proyecto':'✓ Opción base: '+base}</span></div>
     <span class="mini-state" data-mini="${kC}">A definir</span></div>
   <div class="choice-main"><div><div class="input-label">Decisión tomada</div>
     <input data-key="${kE}" placeholder="Mantener cotizado / cambiar por..."></div>
     ${MODO_NEXO ? `<div><div class="input-label">Estado</div><select data-key="${kC}" data-type="condicion" data-cat="${cat.slug}"><option>A definir</option><option>Mantener opción cotizada</option><option>Evaluar alternativa</option><option>Requiere recotización</option><option>Definido</option></select></div>` : ""}</div>`;
   ch.appendChild(div);
 });
-root.appendChild(d);});}render();load();
+root.appendChild(d);});}
+function guardarRubro(btn, slug) {
+  let lines = ['*Nexo Decisiones ' + slug + '*', ''];
+  document.querySelectorAll('[data-key^="' + slug + '_"]').forEach(el => {
+    const key = el.dataset.key;
+    const val = (el.tagName === 'SELECT' ? el.value : el.value || el.textContent || '').trim();
+    if (val && val !== 'A definir' && !key.includes('comentario')) {
+      lines.push('- ' + key.replace(slug + '_', '').replace(/_/g, ' ') + ': ' + val);
+    }
+  });
+  const nc = document.querySelector('[data-key="' + slug + '_comentario_cliente"]');
+  if (nc && nc.value) lines.push('', 'Notas: ' + nc.value);
+  const msg = document.getElementById('msg-' + slug);
+  navigator.clipboard.writeText(lines.join('\n')).then(() => {
+    btn.textContent = '✓ Guardado'; btn.classList.add('guardado');
+    if (msg) msg.textContent = 'Resumen copiado - paste it in WhatsApp/mail para enviar a Nexo';
+    setTimeout(() => { btn.textContent = 'Guardar cambios'; btn.classList.remove('guardado'); if(msg) msg.textContent=''; }, 4000);
+  }).catch(() => {
+    btn.textContent = '✓ Guardado'; btn.classList.add('guardado');
+    setTimeout(() => { btn.textContent = 'Guardar cambios'; btn.classList.remove('guardado'); }, 3000);
+  });
+}render();load();
   // Apply nexo mode
   if (MODO_NEXO) {
     ['field-proyecto','field-etapa','field-estado'].forEach(id => {
