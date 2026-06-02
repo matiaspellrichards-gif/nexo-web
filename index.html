@@ -48,8 +48,7 @@ const baseItems=cat.items.map(([item,base])=>{
 
 d.innerHTML=`<summary class="cover"><div class="cover-bg" style="background-image:url('assets/img/${cat.cover}')"></div><div class="cover-content"><div class="cover-title">${cat.title}</div><div class="cover-desc">${cat.desc}</div><div class="cover-bottom"><div class="mini-stats"><span class="mini" data-cat-elegidas="${cat.slug}">0 elecciones</span><span class="mini" data-cat-recotizar="${cat.slug}">0 a revisar</span></div></div></div></summary>
 <div class="body">
-  <p class="soft-label">Base cotizada</p>
-  <div class="base-box">${baseItems}<p class="nota">La configuración base es el punto de partida. Las alternativas se evalúan y, si modifican alcance o producto, se recotizan.</p></div>
+
   <p class="soft-label" style="margin-top:20px">Referencias visuales</p>
   <div class="refs">${cat.refs.map(img=>`<div class="ref" style="background-image:url('assets/img/${img}')"></div>`).join('')}</div>
   <a href="proyectos.html" class="ref-link">Ver en nuestros proyectos →</a>
