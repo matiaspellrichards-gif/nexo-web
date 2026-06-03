@@ -62,6 +62,14 @@
   .cotizar-titulo { font-size:14px; font-weight:600; color:var(--negro); margin-bottom:3px; }
   .cotizar-desc { font-size:13px; color:var(--gris); line-height:1.5; }
 
+  .cal-wrap { position:relative; margin-top:4px; }
+  .cal-months { display:flex; border-bottom:1px solid rgba(255,255,255,0.15); margin-bottom:8px; }
+  .cal-m { flex:1; text-align:center; font-size:9px; color:rgba(255,255,255,0.55); padding:6px 2px; text-transform:uppercase; letter-spacing:.5px; border-right:1px solid rgba(255,255,255,0.08); }
+  .cal-m:last-child { border-right:none; }
+  .cal-bands { position:relative; height:52px; }
+  .cal-band { position:absolute; height:40px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:600; letter-spacing:.3px; text-align:center; line-height:1.3; padding:0 4px; top:0; }
+  .cal-band.ocupado { background:rgba(255,255,255,0.12); color:rgba(255,255,255,0.6); }
+  .cal-band.disponible { background:var(--arena); color:var(--negro); }
   .agenda-aviso { font-size:13px; color:var(--negro); background:white; border:1px solid var(--linea); border-left:3px solid var(--arena); padding:12px 14px; margin-bottom:24px; line-height:1.5; border-radius:0 4px 4px 0; }
   .agenda-aviso strong { font-weight:600; }
   .timeline { display:flex; position:relative; padding-bottom:4px; }
@@ -181,7 +189,49 @@ const CONFIG = {
 };
 /* ═══════════════════════════════════════════════════════ */
 
-document.addEventListener("DOMContentLoaded", () => {
+
+function buildCalendar() {
+  const el = document.getElementById('cal-agenda');
+  if (!el) return;
+  const mNames = ['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  function parse(s){ const p=s.split('/'); return {m:parseInt(p[0]),y:parseInt(p[1])}; }
+  function addMonths(d,n){ let m=d.m+n,y=d.y; while(m>12){m-=12;y++;} return {m,y}; }
+  function eq(a,b){ return a.m===b.m && a.y===b.y; }
+  function diff(a,b){ return (b.y-a.y)*12+(b.m-a.m); }
+
+  const a0start = parse(CONFIG.agenda[0].inicio);
+  const end     = parse(CONFIG.entregaTuCasa);
+  const total   = diff(a0start, end);
+
+  // Build months header
+  let hdr = '<div class="cal-months">';
+  for(let i=0;i<=total;i++){
+    const d=addMonths(a0start,i);
+    hdr+=`<div class="cal-m">${mNames[d.m]}</div>`;
+  }
+  hdr += '</div><div class="cal-bands">';
+
+  // Build project bands
+  const projects = CONFIG.agenda.map(a=>({
+    name: a.nombre.replace('\n',' '),
+    start: parse(a.inicio),
+    end: parse(a.entrega),
+    type:'ocupado'
+  }));
+  const lastEnd = parse(CONFIG.agenda[CONFIG.agenda.length-1].entrega);
+  projects.push({ name:'Tu casa', start:lastEnd, end:parse(CONFIG.entregaTuCasa), type:'disponible' });
+
+  projects.forEach(p=>{
+    const si = diff(a0start, p.start);
+    const ei = diff(a0start, p.end);
+    const l  = (si/(total+1)*100).toFixed(1);
+    const w  = ((ei-si)/(total+1)*100).toFixed(1);
+    hdr+=`<div class="cal-band ${p.type}" style="left:${l}%;width:${w}%">${p.name}</div>`;
+  });
+
+  hdr += '</div>';
+  el.innerHTML = hdr;
+}document.addEventListener("DOMContentLoaded", () => {
   const set = (id, val) => { const el = document.getElementById(id); if (el) el.innerHTML = val; };
   set("cfg-fecha",         CONFIG.fechaEnvio);
   set("cfg-descripcion",   CONFIG.descripcion || PLANOS[CONFIG.plano] || "");
@@ -211,6 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (planoEl) planoEl.src = CONFIG.plano;
   const planoLb = document.getElementById("cfg-plano-lb");
   if (planoLb) planoLb.src = CONFIG.plano;
+  buildCalendar();
 });
 
   // Rubros accordion
@@ -253,6 +304,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 <!-- PLANO DE REFERENCIA -->
+<div class="plano-bloque">
+  <p class="plano-label">Plano de referencia</p>
+  <div class="plano-wrap" onclick="abrirPlano()"><img src="" id="cfg-plano"  alt="Plano de referencia">
+    <div class="plano-tap-hint">Tocá para ampliar</div>
+  </div>
+  <p class="plano-nota">El plano es de referencia y puede ajustarse durante el proceso de proyecto.</p>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="plano-lightbox" onclick="cerrarPlano()">
+  <div class="lightbox-cerrar" onclick="cerrarPlano()">×</div>
+  <img id="cfg-plano-lb" src="" alt="Plano de referencia">
+</div>
+
+
+
+<div class="total-bloque">
+  <p class="total-label">Total · Materiales + Mano de obra</p>
+  <div class="total-valor" id="cfg-total">USD 58.000</div><!-- MONTO -->
+  <p class="total-detalle">Entrega llave en mano · Exento de IVA<br>Solicitar factura si corresponde</p>
+  <a class="total-link" onclick="abrirIncluye()" href="#que-incluye">Ver qué incluye ↓</a>
+</div>
+
+</div>
+
+<div class="acc-header" onclick="toggle('agenda-cuerpo','icono-agenda')">
+  <span class="acc-titulo">Agenda de producción</span>
+  <span class="acc-icono" id="icono-agenda">+</span>
+</div>
+<div class="acc-cuerpo" id="agenda-cuerpo">
+<div class="seccion">
+  <div class="agenda-aviso">Construimos <strong>una casa a la vez.</strong> Con el anticipo del 5% reservás tu lugar y comenzamos la personalización de tu proyecto.</div>
+<div id="cal-agenda" class="cal-wrap"></div>-- PLANO DE REFERENCIA -->
 <div class="plano-bloque">
   <p class="plano-label">Plano de referencia</p>
   <div class="plano-wrap" onclick="abrirPlano()"><img src="" id="cfg-plano"  alt="Plano de referencia">
