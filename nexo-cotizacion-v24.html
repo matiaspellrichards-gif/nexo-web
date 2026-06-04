@@ -135,16 +135,15 @@
   .ct-item { margin-bottom:14px; }
   .ct-label { font-size:9.5px; letter-spacing:1.5px; text-transform:uppercase; color:var(--arena); margin-bottom:3px; }
   .ct-item a { color:var(--negro); text-decoration:none; font-size:13px; }
-  .cal-year-row { margin-bottom:16px; }
-  .cal-y-label { font-size:10px; font-weight:700; color:var(--marron); letter-spacing:.5px; margin-bottom:5px; }
-  .cal-months { display:flex; margin-bottom:6px; }
-  .cal-m { flex:1; text-align:center; font-size:9px; color:var(--gris); text-transform:uppercase; letter-spacing:.5px; }
-  .cal-track { display:flex; gap:3px; height:46px; }
-  .cal-seg.vacio { background:transparent; }
-  .cal-seg { display:flex; align-items:center; justify-content:center; text-align:center; border-radius:6px; font-size:9.5px; font-weight:600; line-height:1.15; padding:0 6px; box-sizing:border-box; }
-  .cal-seg.ocupado { background:#ece2d8; color:var(--marron); }
-  .cal-seg.disponible { background:var(--arena); color:var(--negro); }
-  .cal-leyenda { display:flex; gap:16px; margin-top:12px; font-size:9px; color:var(--gris); }
+  .cal-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(60px, 1fr)); gap:4px; }
+  .cal-cell { border-radius:5px; padding:5px 2px 6px; min-height:50px; display:flex; flex-direction:column; align-items:center; text-align:center; }
+  .cal-cell.ocupado { background:#ece2d8; color:var(--marron); }
+  .cal-cell.disponible { background:var(--arena); color:var(--negro); }
+  .cal-cell.vacio { background:#f4f1ee; color:var(--gris); }
+  .cal-cy { font-size:8px; font-weight:700; letter-spacing:.5px; height:11px; line-height:11px; opacity:.8; }
+  .cal-cm { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.5px; }
+  .cal-cp { font-size:8px; line-height:1.15; margin-top:3px; opacity:.92; }
+  .cal-leyenda { display:flex; gap:16px; margin-top:14px; font-size:9px; color:var(--gris); }
   .cal-leyenda > span { display:flex; align-items:center; gap:5px; }
   .cal-dot { width:9px; height:9px; border-radius:3px; display:inline-block; }
   .dot-ocu { background:#ece2d8; }
@@ -178,7 +177,7 @@ const CONFIG = {
   agenda: [
     { inicio: "10/2026", nombre: "Casa Alex y Sabri",        entrega: "01/2027" },
     { inicio: "01/2027", nombre: "Casa Gisela",              entrega: "03/2027" },
-    { inicio: "03/2027", nombre: "Casa Orillas del Caleufu", entrega: "05/2027" },
+    { inicio: "03/2027", nombre: "Casa Caleufu", entrega: "05/2027" },
     { inicio: "05/2027", nombre: "Casa de Juli y Nico",      entrega: "08/2027" },
   ],
   entregaTuCasa: "10/2027",   // siempre el 3° slot
@@ -208,30 +207,17 @@ function buildCalendar(){
   CONFIG.agenda.forEach(function(a){projs.push({ini:parse(a.inicio),fin:parse(a.entrega),nombre:a.nombre.replace('\n',' '),tipo:'ocupado'});});
   var lastFin=parse(CONFIG.agenda[CONFIG.agenda.length-1].entrega);
   projs.push({ini:lastFin,fin:parse(CONFIG.entregaTuCasa),nombre:'Tu casa',tipo:'disponible'});
-  var calStart=projs[0].ini;
-  var end=parse(CONFIG.entregaTuCasa);
+  var calStart=projs[0].ini;var end=parse(CONFIG.entregaTuCasa);
   function occ(m){for(var k=0;k<projs.length;k++){if(m>=projs[k].ini&&m<projs[k].fin)return k;}return -1;}
-  var groups=[];var m=calStart;
-  while(m<end){var Y=yLabel(m);var ym=[];while(m<end&&yLabel(m)===Y){ym.push(m);m++;}groups.push({year:Y,months:ym});}
-  var maxM=0;groups.forEach(function(g){if(g.months.length>maxM)maxM=g.months.length;});
-  var html='';
-  groups.forEach(function(g){
-    var w=(g.months.length/maxM*100).toFixed(2);
-    html+='<div class="cal-year-row" style="width:'+w+'%">';
-    html+='<div class="cal-y-label">'+g.year+'</div>';
-    html+='<div class="cal-months">';
-    g.months.forEach(function(mm){html+='<div class="cal-m">'+mLabel(mm)+'</div>';});
-    html+='</div><div class="cal-track">';
-    var i=0;
-    while(i<g.months.length){
-      var o=occ(g.months[i]);var span=1;
-      while(i+span<g.months.length&&occ(g.months[i+span])===o){span++;}
-      if(o===-1){html+='<div class="cal-seg vacio" style="flex:'+span+'"></div>';}
-      else{html+='<div class="cal-seg '+projs[o].tipo+'" style="flex:'+span+'">'+projs[o].nombre+'</div>';}
-      i+=span;
-    }
-    html+='</div></div>';
-  });
+  var html='<div class="cal-grid">';
+  for(var m=calStart;m<end;m++){
+    var o=occ(m);
+    var tipo=(o<0)?'vacio':projs[o].tipo;
+    var year=(mLabel(m)==='Ene'||m===calStart)?yLabel(m):'';
+    var name=(o<0)?'':projs[o].nombre;
+    html+='<div class="cal-cell '+tipo+'"><div class="cal-cy">'+year+'</div><div class="cal-cm">'+mLabel(m)+'</div><div class="cal-cp">'+name+'</div></div>';
+  }
+  html+='</div>';
   html+='<div class="cal-leyenda"><span><span class="cal-dot dot-ocu"></span>Reservado</span><span><span class="cal-dot dot-disp"></span>Tu lugar</span></div>';
   el.innerHTML=html;
 }
