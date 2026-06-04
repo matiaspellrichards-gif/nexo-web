@@ -135,14 +135,14 @@
   .ct-item { margin-bottom:14px; }
   .ct-label { font-size:9.5px; letter-spacing:1.5px; text-transform:uppercase; color:var(--arena); margin-bottom:3px; }
   .ct-item a { color:var(--negro); text-decoration:none; font-size:13px; }
-  .cal-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(60px, 1fr)); gap:4px; }
-  .cal-cell { border-radius:5px; padding:5px 2px 6px; min-height:50px; display:flex; flex-direction:column; align-items:center; text-align:center; }
-  .cal-cell.ocupado { background:#ece2d8; color:var(--marron); }
-  .cal-cell.disponible { background:var(--arena); color:var(--negro); }
-  .cal-cell.vacio { background:#f4f1ee; color:var(--gris); }
-  .cal-cy { font-size:8px; font-weight:700; letter-spacing:.5px; height:11px; line-height:11px; opacity:.8; }
-  .cal-cm { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.5px; }
-  .cal-cp { font-size:8px; line-height:1.15; margin-top:3px; opacity:.92; }
+  .cal-years { display:flex; margin-bottom:4px; }
+  .cal-y { flex:1; text-align:center; font-size:9px; font-weight:700; color:var(--marron); letter-spacing:.5px; border-bottom:1px solid var(--linea); padding-bottom:3px; margin:0 1px; }
+  .cal-months { display:flex; margin-bottom:6px; }
+  .cal-m { flex:1; text-align:center; font-size:9px; color:var(--gris); text-transform:uppercase; letter-spacing:.3px; }
+  .cal-track { display:flex; gap:3px; height:46px; }
+  .cal-seg { display:flex; align-items:center; justify-content:center; text-align:center; border-radius:6px; font-size:9px; font-weight:600; line-height:1.15; padding:0 3px; box-sizing:border-box; }
+  .cal-seg.ocupado { background:#ece2d8; color:var(--marron); }
+  .cal-seg.disponible { background:var(--arena); color:var(--negro); }
   .cal-leyenda { display:flex; gap:16px; margin-top:14px; font-size:9px; color:var(--gris); }
   .cal-leyenda > span { display:flex; align-items:center; gap:5px; }
   .cal-dot { width:9px; height:9px; border-radius:3px; display:inline-block; }
@@ -203,23 +203,19 @@ function buildCalendar(){
   function parse(s){var p=s.split('/');return parseInt(p[1])*12+(parseInt(p[0])-1);}
   function mLabel(i){return M[((i%12)+12)%12];}
   function yLabel(i){return Math.floor(i/12);}
-  var projs=[];
-  CONFIG.agenda.forEach(function(a){projs.push({ini:parse(a.inicio),fin:parse(a.entrega),nombre:a.nombre.replace('\n',' '),tipo:'ocupado'});});
+  var segs=[];
+  CONFIG.agenda.forEach(function(a){segs.push({ini:parse(a.inicio),fin:parse(a.entrega),nombre:a.nombre.replace('\n',' '),tipo:'ocupado'});});
   var lastFin=parse(CONFIG.agenda[CONFIG.agenda.length-1].entrega);
-  projs.push({ini:lastFin,fin:parse(CONFIG.entregaTuCasa),nombre:'Tu casa',tipo:'disponible'});
-  var calStart=projs[0].ini;var end=parse(CONFIG.entregaTuCasa);
-  function occ(m){for(var k=0;k<projs.length;k++){if(m>=projs[k].ini&&m<projs[k].fin)return k;}return -1;}
-  var html='<div class="cal-grid">';
-  for(var m=calStart;m<end;m++){
-    var o=occ(m);
-    var tipo=(o<0)?'vacio':projs[o].tipo;
-    var year=(mLabel(m)==='Ene'||m===calStart)?yLabel(m):'';
-    var name=(o<0)?'':projs[o].nombre;
-    html+='<div class="cal-cell '+tipo+'"><div class="cal-cy">'+year+'</div><div class="cal-cm">'+mLabel(m)+'</div><div class="cal-cp">'+name+'</div></div>';
-  }
-  html+='</div>';
-  html+='<div class="cal-leyenda"><span><span class="cal-dot dot-ocu"></span>Reservado</span><span><span class="cal-dot dot-disp"></span>Tu lugar</span></div>';
-  el.innerHTML=html;
+  segs.push({ini:lastFin,fin:parse(CONFIG.entregaTuCasa),nombre:'Tu casa',tipo:'disponible'});
+  var start=segs[0].ini;var end=parse(CONFIG.entregaTuCasa);var totalM=end-start;
+  var years='';var i=0;
+  while(i<totalM){var y=yLabel(start+i);var span=0;while(i<totalM&&yLabel(start+i)===y){span++;i++;}years+='<div class="cal-y" style="flex:'+span+'">'+y+'</div>';}
+  var months='';
+  for(var j=0;j<totalM;j++){months+='<div class="cal-m">'+mLabel(start+j)+'</div>';}
+  var track='';
+  segs.forEach(function(s){var span=s.fin-s.ini;track+='<div class="cal-seg '+s.tipo+'" style="flex:'+span+'">'+s.nombre+'</div>';});
+  var leg='<div class="cal-leyenda"><span><span class="cal-dot dot-ocu"></span>Reservado</span><span><span class="cal-dot dot-disp"></span>Tu lugar</span></div>';
+  el.innerHTML='<div class="cal-years">'+years+'</div><div class="cal-months">'+months+'</div><div class="cal-track">'+track+'</div>'+leg;
 }
 document.addEventListener("DOMContentLoaded", () => {
   const set = (id, val) => { const el = document.getElementById(id); if (el) el.innerHTML = val; };
