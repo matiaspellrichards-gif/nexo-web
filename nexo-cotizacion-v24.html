@@ -135,6 +135,7 @@
   .ct-item { margin-bottom:14px; }
   .ct-label { font-size:9.5px; letter-spacing:1.5px; text-transform:uppercase; color:var(--arena); margin-bottom:3px; }
   .ct-item a { color:var(--negro); text-decoration:none; font-size:13px; }
+  .cal-strip { margin-bottom:16px; }
   .cal-years { display:flex; margin-bottom:4px; }
   .cal-y { flex:1; text-align:center; font-size:9px; font-weight:700; color:var(--marron); letter-spacing:.5px; border-bottom:1px solid var(--linea); padding-bottom:3px; margin:0 1px; }
   .cal-months { display:flex; margin-bottom:6px; }
@@ -143,6 +144,7 @@
   .cal-seg { display:flex; align-items:center; justify-content:center; text-align:center; border-radius:6px; font-size:9px; font-weight:600; line-height:1.15; padding:0 3px; box-sizing:border-box; }
   .cal-seg.ocupado { background:#ece2d8; color:var(--marron); }
   .cal-seg.disponible { background:var(--arena); color:var(--negro); }
+  .cal-seg.vacio { background:transparent; }
   .cal-leyenda { display:flex; gap:16px; margin-top:14px; font-size:9px; color:var(--gris); }
   .cal-leyenda > span { display:flex; align-items:center; gap:5px; }
   .cal-dot { width:9px; height:9px; border-radius:3px; display:inline-block; }
@@ -208,14 +210,23 @@ function buildCalendar(){
   var lastFin=parse(CONFIG.agenda[CONFIG.agenda.length-1].entrega);
   segs.push({ini:lastFin,fin:parse(CONFIG.entregaTuCasa),nombre:'Tu casa',tipo:'disponible'});
   var start=segs[0].ini;var end=parse(CONFIG.entregaTuCasa);var totalM=end-start;
-  var years='';var i=0;
-  while(i<totalM){var y=yLabel(start+i);var span=0;while(i<totalM&&yLabel(start+i)===y){span++;i++;}years+='<div class="cal-y" style="flex:'+span+'">'+y+'</div>';}
-  var months='';
-  for(var j=0;j<totalM;j++){months+='<div class="cal-m">'+mLabel(start+j)+'</div>';}
-  var track='';
-  segs.forEach(function(s){var span=s.fin-s.ini;track+='<div class="cal-seg '+s.tipo+'" style="flex:'+span+'">'+s.nombre+'</div>';});
-  var leg='<div class="cal-leyenda"><span><span class="cal-dot dot-ocu"></span>Reservado</span><span><span class="cal-dot dot-disp"></span>Tu lugar</span></div>';
-  el.innerHTML='<div class="cal-years">'+years+'</div><div class="cal-months">'+months+'</div><div class="cal-track">'+track+'</div>'+leg;
+  function occ(m){for(var k=0;k<segs.length;k++){if(m>=segs[k].ini&&m<segs[k].fin)return k;}return -1;}
+  var perRow=Math.ceil(totalM/2);
+  var html='';
+  for(var r=0;r<totalM;r+=perRow){
+    var a=r;var b=Math.min(r+perRow,totalM);
+    var years='';var i=a;
+    while(i<b){var y=yLabel(start+i);var span=0;while(i<b&&yLabel(start+i)===y){span++;i++;}years+='<div class="cal-y" style="flex:'+span+'">'+y+'</div>';}
+    var months='';for(var j=a;j<b;j++){months+='<div class="cal-m">'+mLabel(start+j)+'</div>';}
+    var track='';var k=a;
+    while(k<b){var o=occ(start+k);var span=1;while(k+span<b&&occ(start+k+span)===o){span++;}
+      if(o<0){track+='<div class="cal-seg vacio" style="flex:'+span+'"></div>';}
+      else{track+='<div class="cal-seg '+segs[o].tipo+'" style="flex:'+span+'">'+segs[o].nombre+'</div>';}
+      k+=span;}
+    html+='<div class="cal-strip"><div class="cal-years">'+years+'</div><div class="cal-months">'+months+'</div><div class="cal-track">'+track+'</div></div>';
+  }
+  html+='<div class="cal-leyenda"><span><span class="cal-dot dot-ocu"></span>Reservado</span><span><span class="cal-dot dot-disp"></span>Tu lugar</span></div>';
+  el.innerHTML=html;
 }
 document.addEventListener("DOMContentLoaded", () => {
   const set = (id, val) => { const el = document.getElementById(id); if (el) el.innerHTML = val; };
