@@ -53,7 +53,7 @@ d.innerHTML=`<summary class="cover"><div class="cover-bg" style="background-imag
 
   <p class="soft-label" style="margin-top:20px">Referencias</p>
   <div class="refs">${cat.refs.map(img=>`<div class="ref" style="background-image:url('assets/img/${img}')"></div>`).join('')}</div>
-  <a href="${GALERIAS.includes(cat.slug)?'galeria-'+cat.slug+'.html':'proyectos.html'}" class="ref-link">${GALERIAS.includes(cat.slug)?'Ver más fotos →':'Ver en nuestros proyectos →'}</a>
+  <a href="${GALERIAS.includes(cat.slug)?'galeria-'+cat.slug+'.html':'proyectos.html'}" class="ref-link">${GALERIAS.includes(cat.slug)?'Ver galería de fotos →':'Ver en nuestros proyectos →'}</a>
   <p class="soft-label" style="margin-top:20px">Definiciones del proyecto</p>
   <div class="choices"></div>
   <div class="comments"><p class="soft-label">Notas del rubro</p><div class="comment-grid"><textarea data-key="${cat.slug}_comentario_cliente" placeholder="Preferencias, dudas o referencias del cliente..."></textarea><textarea data-key="${cat.slug}_comentario_nexo" placeholder="Aclaraciones técnicas, impacto en presupuesto..."></textarea></div></div>
