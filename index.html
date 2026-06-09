@@ -44,7 +44,6 @@ function abrirCot(src){var lb=document.getElementById("cot-lb");document.getElem
 
 const baseItems=cat.items.map(([item,base])=>{
   const extra=isExtra(base);
-  let thumbs="";if(cot){(Array.isArray(cot)?cot:[cot]).forEach(im=>{thumbs+='<img class="cot-thumb" src="assets/img/cot/'+im+'" alt="Opción cotizada" onclick="abrirCot(this.src)">';});}
   return `<div class="base-item"><span class="base-item-name">${item}</span><span class="base-item-val ${extra?'base-extra':'base-inc'}">${extra?'⚠ A cotizar':'✓ '+base}</span></div>`;
 }).join('');
 
