@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="https://use.typekit.net/gvc0wtt.css">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="assets/favicon.png?v=3">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
     --bg:#0d0b09; --bg2:#141210; --text:#f0ece5; --amber:#c9aa82;
@@ -114,6 +115,8 @@
     .rubros-grid { grid-template-columns:1fr; }
     .refs { gap:4px; }
   }
+  .save-status { position:fixed; bottom:14px; right:16px; z-index:90; font-size:0.6rem; letter-spacing:0.08em; color:var(--muted); background:var(--bg2); border:1px solid var(--border); border-radius:20px; padding:5px 12px; opacity:0; transition:opacity .3s; pointer-events:none; }
+  .save-status.show { opacity:1; }
 </style>
 </head>
 <body>
@@ -155,10 +158,41 @@
 <!-- COT LIGHTBOX -->
 <div class="cot-lb" id="cot-lb" onclick="cerrarCot()"><img id="cot-lb-img" src="" alt=""></div>
 
+<div class="save-status" id="save-status"></div>
 <script>
 const categories = [{"slug": "exterior", "title": "Exterior", "desc": "Revestimientos, aberturas, cubierta, deck y expansión exterior.", "cover": "exterior_cover.jpg", "refs": ["exterior_ref_1.jpg", "exterior_ref_2.jpg", "exterior_ref_3.jpg"], "items": [["Techos", "Chapa prepintada sinusoidal (varios colores)"], ["Paredes", "Chapa prepintada sinusoidal (varios colores) / Entablonado pino impregnado vertical", "exterior-2.jpg"], ["Esquineros / Cenefas", "Chapa prepintada lisa (varios colores)", "exterior-3.jpg"], ["Aberturas", "PVC Negro", "exterior-4.jpg"], ["Contramarcos", "Marco cajón de pino impregnado pintado (varios colores)", "exterior-5.jpg"], ["Deck exterior", "A cotizar según proyecto"]]}, {"slug": "interior", "title": "Interior", "desc": "Revestimientos interiores, pisos, zócalos y terminaciones.", "cover": "interior_cover.jpg", "refs": ["interior_ref_1.jpg", "interior_ref_2.jpg", "interior_ref_3.jpg"], "items": [["Paredes", "Machimbre Eucalipto 1/2\"x5\""], ["Cielorraso", "Machimbre Eucalipto 1/2\"x5\""], ["Piso", "Vinílico SPC (ver catálogo de colores/texturas)"], ["Zócalos y contramarcos", "Eucalipto"]]}, {"slug": "cocina", "title": "Cocina", "desc": "Mesada, bacha, grifería, muebles, alzada y electrodomésticos.", "cover": "cocina_cover.jpg", "refs": ["cocina_ref_1.jpg", "cocina_ref_2.jpg", "cocina_ref_3.jpg"], "items": [["Mesada", "Negro Brasil x 3m", "cocina-1.jpg"], ["Alzada", "Machimbre Eucalipto c/chapón sobre anafe", "cocina-2.jpg"], ["Bacha", "Johnson ZZ 52/18", "cocina-3.jpg"], ["Grifería", "Fv Puelo Monocomando", "cocina-4.jpg"], ["Mueble bajo mesada", "Interiores Eucalipto - Frentes melamina. 3 Puertas/3 cajones/Especiero/Gabinete Heladera"], ["Mueble alacena", "Interiores Eucalipto - Frentes melamina. 5 puertas con estante regulable/Luz led bajo alacena"], ["Extractor", "Motor extractor (sin filtro)"], ["Horno / Anafe", "No incluido"], ["Heladera", "No incluido"], ["Lavavajillas", "No incluido"], ["Microondas", "No incluido"]]}, {"slug": "banos", "title": "Baños", "desc": "Artefactos, vanitory, ducha, bañera, mampara y revestimientos.", "cover": "banos_cover.jpg", "refs": ["banos_ref_1.jpg", "banos_ref_2.jpg", "banos_ref_3.jpg"], "items": [["Inodoro", "Roca Monaco", "banos-1.jpg"], ["Ducha / Bañadera", "Receptáculo de ducha acrílico Ferrum 140x70cm", "banos-2.jpg"], ["Lavatorio", "Bacha de apoyo Piazza A449 (46cm x 42cm)", "banos-3.jpg"], ["Mueble Vanitory", "Mueble de colgar de Eucalipto c/ 2 puertas.", "banos-4.jpg"], ["Griferías", "Kit FV Puelo ducha-bañadera c/transferencia + lavatorio bajo monocomando color negro / Bidet de mano frío-calor color negro", ["banos-5-ducha.jpg", "banos-5-lavatorio.jpg"]], ["Revestimiento cerámico", "Cerámico 60x60x3m² · Ducha completa + detrás de inodoro y vanitory hasta 1,20m", "banos-6.jpg"], ["Mampara / Cortina", "No incluido"], ["Toallero", "No incluido"], ["Accesorios (espejo, jaboneras, portarrollos)", "No incluido"]]}, {"slug": "lavadero", "title": "Lavadero", "desc": "Pileta, guardado, termotanque, lavarropas y conexiones.", "cover": "lavadero_cover.jpg", "refs": ["lavadero_ref_1.jpg", "lavadero_ref_2.jpg", "lavadero_ref_3.jpg"], "items": [["Mesada", "Tablero Eucalipto 30mm x 1,2m"], ["Pileta", "Mi pileta 46x37x24"], ["Grifería", "Fv Puelo monocomando"], ["Cerramiento", "2 puertas corredizas piso a techo (tipo placard) de Eucalipto"], ["Lavarropas", "No incluido"]]}, {"slug": "dormitorio", "title": "Dormitorio", "desc": "Placards, guardado, escritorios y mobiliario fijo.", "cover": "dormitorio_cover.jpg", "refs": ["dormitorio_ref_1.jpg", "dormitorio_ref_2.jpg", "dormitorio_ref_3.jpg"], "items": [["Placard", "Placard de melamina con 2 puertas corredizas. 4 cajones + barrales y estantes regulables"], ["Mesas de luz", "No incluido"]]}, {"slug": "puertas", "title": "Puertas", "desc": "Puertas exteriores, interiores, corredizas, vidriadas y herrajes.", "cover": "puertas_cover.jpg", "refs": ["puertas_ref_1.jpg", "puertas_ref_2.jpg", "puertas_ref_3.jpg"], "items": [["Puerta exterior", "Madera pintada (color según proyecto)"], ["Puerta interior baño", "Corrediza embutida de Euca"], ["Puerta interior dormitorio", "Corrediza de abrir de Euca"], ["Otras", "A definir según proyecto"]]}, {"slug": "calefaccion", "title": "Calefacción", "desc": "Sistema, ubicación de equipos, salidas y preinstalaciones.", "cover": "calefaccion_cover.jpg", "refs": ["calefaccion_ref_1.jpg", "calefaccion_ref_2.jpg", "calefaccion_ref_3.jpg"], "items": [["Sistema de calefacción", "A definir según proyecto"], ["Ubicación de equipos", "A definir"], ["Salidas / ventilaciones", "Según sistema elegido"], ["Preinstalaciones", "A cotizar si corresponde"]]}, {"slug": "equipamiento", "title": "Equipamiento", "desc": "Iluminación, cortinas, accesorios y mobiliario complementario.", "cover": "equipamiento_cover.jpg", "refs": ["equipamiento_ref_1.jpg", "equipamiento_ref_2.jpg", "equipamiento_ref_3.jpg"], "items": [["Artefactos de iluminación", "No incluidos / a definir"], ["Cortinas", "No incluidas"], ["Accesorios baño", "No incluidos"], ["Accesorios cocina", "No incluidos"], ["Mobiliario adicional", "A definir"]]}];
 const MODO_NEXO = new URLSearchParams(window.location.search).get("nexo")==="1";
 const GALERIAS = ["cocina"];
+/* ── Supabase: persistencia por cliente ── */
+const SB_URL='https://chplkjzxfqktftcefwsp.supabase.co';
+const SB_KEY='sb_publishable_v7pYtkEAR0bprUIw1QWiCw_GFdx0Tid';
+const TOKEN=new URLSearchParams(location.search).get('c');
+let SB=null, DATOS={}, _saveT=null;
+if(TOKEN && window.supabase){ SB=window.supabase.createClient(SB_URL,SB_KEY); }
+function setSave(t){ var el=document.getElementById('save-status'); if(!el)return; el.textContent=t; el.classList.toggle('show',!!t); }
+async function cargarDatos(){
+  if(!SB) return;
+  setSave('Cargando…');
+  const r=await SB.rpc('cliente_get',{p_token:TOKEN});
+  if(r.error){ setSave('Sin conexión'); return; }
+  if(r.data && r.data.length){
+    DATOS=r.data[0].datos||{};
+    if(!DATOS.proyecto && r.data[0].nombre){ DATOS.proyecto=r.data[0].nombre; }
+  }
+  ['proyecto','etapa','estado'].forEach(function(k){ var el=document.getElementById('field-'+k); if(el && DATOS[k]!=null) el.textContent=DATOS[k]; });
+  setSave('Guardado ✓');
+}
+function guardar(){
+  if(!SB) return;
+  setSave('Guardando…');
+  clearTimeout(_saveT);
+  _saveT=setTimeout(async function(){
+    const r=await SB.rpc('cliente_save',{p_token:TOKEN,p_datos:DATOS});
+    setSave(r.error?'Error al guardar':'Guardado ✓');
+  },700);
+}
+document.addEventListener('input',function(e){ var el=e.target.closest('[data-key]'); if(!el)return; DATOS[el.dataset.key]=(el.isContentEditable?el.textContent.trim():el.value); guardar(); });
+document.addEventListener('change',function(e){ var el=e.target.closest('[data-key]'); if(!el||el.tagName!=='SELECT')return; DATOS[el.dataset.key]=el.value; guardar(); });
 function keyFor(cat,item,suf){return(cat+'_'+item+'_'+suf).replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]+/g,'_');}
 function isExtra(v){return /a cotizar|a definir|no incluido|no incluida/i.test(v);}
 function abrirCot(src){var lb=document.getElementById("cot-lb");document.getElementById("cot-lb-img").src=src;lb.classList.add("activo");}
@@ -205,6 +239,7 @@ function renderRubro(i){
     div.innerHTML='<div class="choice-head"><div><div class="choice-title">'+item+'</div><div class="choice-base-row"><span class="'+(extra?'choice-status-extra':'choice-status-inc')+'">'+statusTxt+'</span>'+thumbs+'</div></div><span class="mini-state" data-mini="'+kC+'">A definir</span></div><div class="choice-main"><div><input data-key="'+kE+'" placeholder="'+ph+'"></div>'+estadoHtml+'</div>';
     ch.appendChild(div);
   });
+  document.querySelectorAll("#rubro-page [data-key]").forEach(function(el){ var v=DATOS[el.dataset.key]; if(v==null)return; if(el.tagName==="SELECT"||el.tagName==="INPUT"||el.tagName==="TEXTAREA"){el.value=v;} });
 }
 
 /* Navegación */
@@ -228,6 +263,7 @@ function toggleMenu(){ document.getElementById('menu-overlay').classList.toggle(
 function cerrarMenu(){ document.getElementById('menu-overlay').classList.remove('activo'); }
 
 renderInicio();
+cargarDatos();
 if(MODO_NEXO){
   ['field-proyecto','field-etapa','field-estado'].forEach(function(id){var el=document.getElementById(id); if(el) el.contentEditable='true';});
 }

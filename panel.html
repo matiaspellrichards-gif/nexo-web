@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexo — Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="assets/favicon.png?v=3">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root { --bg:#0d0b09; --bg2:#141210; --text:#f0ece5; --amber:#c9aa82; --muted:rgba(240,236,229,0.45); --border:rgba(240,236,229,0.12); --warn:#d98b6a; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); }
+  .wrap { max-width:880px; margin:0 auto; padding:2.5rem max(1.4rem,calc(50% - 440px)) 5rem; }
+  h1 { font-weight:200; font-size:2rem; letter-spacing:-0.01em; }
+  .tag { font-size:0.6rem; letter-spacing:0.28em; text-transform:uppercase; color:var(--amber); margin-bottom:0.8rem; }
+  input, button { font-family:inherit; font-size:0.9rem; }
+  input { background:var(--bg2); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:0.7rem 0.9rem; outline:none; width:100%; }
+  input:focus { border-color:var(--amber); }
+  .btn { background:var(--amber); color:var(--bg); border:none; border-radius:6px; padding:0.7rem 1.2rem; font-weight:500; cursor:pointer; white-space:nowrap; }
+  .btn.ghost { background:transparent; color:var(--text); border:1px solid var(--border); }
+  .btn.sm { padding:0.45rem 0.8rem; font-size:0.72rem; }
+  /* gate */
+  #gate { max-width:340px; margin:18vh auto 0; text-align:center; }
+  #gate h1 { margin-bottom:1.6rem; }
+  #gate input { margin-bottom:0.8rem; text-align:center; }
+  .gate-msg { color:var(--warn); font-size:0.8rem; min-height:1.2em; margin-top:0.6rem; }
+  /* panel */
+  .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:2rem; }
+  .nuevo-box { display:flex; gap:0.6rem; background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:1rem; margin-bottom:2rem; }
+  .cli { border:1px solid var(--border); border-radius:8px; padding:1.1rem 1.3rem; margin-bottom:0.9rem; background:var(--bg2); }
+  .cli-head { display:flex; align-items:center; justify-content:space-between; gap:1rem; cursor:pointer; }
+  .cli-nombre { font-size:1.15rem; font-weight:400; }
+  .cli-meta { font-size:0.65rem; color:var(--muted); margin-top:3px; letter-spacing:0.05em; }
+  .cli-acciones { display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; }
+  .cli-body { display:none; margin-top:1.2rem; padding-top:1.2rem; border-top:1px solid var(--border); }
+  .cli.abierto .cli-body { display:block; }
+  .link-row { display:flex; gap:0.5rem; align-items:center; margin:0.4rem 0; font-size:0.75rem; color:var(--muted); }
+  .link-row code { background:var(--bg); border:1px solid var(--border); border-radius:4px; padding:3px 8px; color:var(--amber); font-size:0.7rem; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .rubro-bloque { margin-top:1.2rem; }
+  .rubro-bloque h4 { font-size:0.6rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--amber); margin-bottom:0.5rem; }
+  .dec { font-size:0.82rem; padding:0.35rem 0; border-bottom:1px solid var(--border); }
+  .dec:last-child { border-bottom:none; }
+  .dec .it { color:var(--text); font-weight:500; }
+  .dec .val { color:var(--muted); }
+  .nota { font-size:0.78rem; color:var(--muted); font-style:italic; margin-top:0.5rem; }
+  .vacio { color:var(--muted); font-size:0.8rem; font-style:italic; }
+</style>
+</head>
+<body>
+
+<!-- GATE -->
+<div id="gate">
+  <p class="tag">Nexo · Taller de Casas</p>
+  <h1>Panel de clientes</h1>
+  <input id="pass" type="password" placeholder="Contraseña" onkeydown="if(event.key==='Enter')entrar()">
+  <button class="btn" style="width:100%" onclick="entrar()">Entrar</button>
+  <p class="gate-msg" id="gate-msg"></p>
+</div>
+
+<!-- PANEL -->
+<div class="wrap" id="panel" style="display:none">
+  <div class="topbar">
+    <div><p class="tag">Panel</p><h1>Clientes</h1></div>
+    <button class="btn ghost sm" onclick="toggleNuevo()">+ Nuevo cliente</button>
+  </div>
+  <div class="nuevo-box" id="nuevo-box" style="display:none">
+    <input id="nuevo-nombre" placeholder="Nombre del proyecto / cliente (ej. Casa Juli y Nico)">
+    <button class="btn" onclick="crear()">Crear link</button>
+  </div>
+  <div id="lista"></div>
+</div>
+
+<script>
+const SB_URL='https://chplkjzxfqktftcefwsp.supabase.co';
+const SB_KEY='sb_publishable_v7pYtkEAR0bprUIw1QWiCw_GFdx0Tid';
+const SB=window.supabase.createClient(SB_URL,SB_KEY);
+const CATEGORIES = [{"slug": "exterior", "title": "Exterior", "desc": "Revestimientos, aberturas, cubierta, deck y expansión exterior.", "cover": "exterior_cover.jpg", "refs": ["exterior_ref_1.jpg", "exterior_ref_2.jpg", "exterior_ref_3.jpg"], "items": [["Techos", "Chapa prepintada sinusoidal (varios colores)"], ["Paredes", "Chapa prepintada sinusoidal (varios colores) / Entablonado pino impregnado vertical", "exterior-2.jpg"], ["Esquineros / Cenefas", "Chapa prepintada lisa (varios colores)", "exterior-3.jpg"], ["Aberturas", "PVC Negro", "exterior-4.jpg"], ["Contramarcos", "Marco cajón de pino impregnado pintado (varios colores)", "exterior-5.jpg"], ["Deck exterior", "A cotizar según proyecto"]]}, {"slug": "interior", "title": "Interior", "desc": "Revestimientos interiores, pisos, zócalos y terminaciones.", "cover": "interior_cover.jpg", "refs": ["interior_ref_1.jpg", "interior_ref_2.jpg", "interior_ref_3.jpg"], "items": [["Paredes", "Machimbre Eucalipto 1/2\"x5\""], ["Cielorraso", "Machimbre Eucalipto 1/2\"x5\""], ["Piso", "Vinílico SPC (ver catálogo de colores/texturas)"], ["Zócalos y contramarcos", "Eucalipto"]]}, {"slug": "cocina", "title": "Cocina", "desc": "Mesada, bacha, grifería, muebles, alzada y electrodomésticos.", "cover": "cocina_cover.jpg", "refs": ["cocina_ref_1.jpg", "cocina_ref_2.jpg", "cocina_ref_3.jpg"], "items": [["Mesada", "Negro Brasil x 3m", "cocina-1.jpg"], ["Alzada", "Machimbre Eucalipto c/chapón sobre anafe", "cocina-2.jpg"], ["Bacha", "Johnson ZZ 52/18", "cocina-3.jpg"], ["Grifería", "Fv Puelo Monocomando", "cocina-4.jpg"], ["Mueble bajo mesada", "Interiores Eucalipto - Frentes melamina. 3 Puertas/3 cajones/Especiero/Gabinete Heladera"], ["Mueble alacena", "Interiores Eucalipto - Frentes melamina. 5 puertas con estante regulable/Luz led bajo alacena"], ["Extractor", "Motor extractor (sin filtro)"], ["Horno / Anafe", "No incluido"], ["Heladera", "No incluido"], ["Lavavajillas", "No incluido"], ["Microondas", "No incluido"]]}, {"slug": "banos", "title": "Baños", "desc": "Artefactos, vanitory, ducha, bañera, mampara y revestimientos.", "cover": "banos_cover.jpg", "refs": ["banos_ref_1.jpg", "banos_ref_2.jpg", "banos_ref_3.jpg"], "items": [["Inodoro", "Roca Monaco", "banos-1.jpg"], ["Ducha / Bañadera", "Receptáculo de ducha acrílico Ferrum 140x70cm", "banos-2.jpg"], ["Lavatorio", "Bacha de apoyo Piazza A449 (46cm x 42cm)", "banos-3.jpg"], ["Mueble Vanitory", "Mueble de colgar de Eucalipto c/ 2 puertas.", "banos-4.jpg"], ["Griferías", "Kit FV Puelo ducha-bañadera c/transferencia + lavatorio bajo monocomando color negro / Bidet de mano frío-calor color negro", ["banos-5-ducha.jpg", "banos-5-lavatorio.jpg"]], ["Revestimiento cerámico", "Cerámico 60x60x3m² · Ducha completa + detrás de inodoro y vanitory hasta 1,20m", "banos-6.jpg"], ["Mampara / Cortina", "No incluido"], ["Toallero", "No incluido"], ["Accesorios (espejo, jaboneras, portarrollos)", "No incluido"]]}, {"slug": "lavadero", "title": "Lavadero", "desc": "Pileta, guardado, termotanque, lavarropas y conexiones.", "cover": "lavadero_cover.jpg", "refs": ["lavadero_ref_1.jpg", "lavadero_ref_2.jpg", "lavadero_ref_3.jpg"], "items": [["Mesada", "Tablero Eucalipto 30mm x 1,2m"], ["Pileta", "Mi pileta 46x37x24"], ["Grifería", "Fv Puelo monocomando"], ["Cerramiento", "2 puertas corredizas piso a techo (tipo placard) de Eucalipto"], ["Lavarropas", "No incluido"]]}, {"slug": "dormitorio", "title": "Dormitorio", "desc": "Placards, guardado, escritorios y mobiliario fijo.", "cover": "dormitorio_cover.jpg", "refs": ["dormitorio_ref_1.jpg", "dormitorio_ref_2.jpg", "dormitorio_ref_3.jpg"], "items": [["Placard", "Placard de melamina con 2 puertas corredizas. 4 cajones + barrales y estantes regulables"], ["Mesas de luz", "No incluido"]]}, {"slug": "puertas", "title": "Puertas", "desc": "Puertas exteriores, interiores, corredizas, vidriadas y herrajes.", "cover": "puertas_cover.jpg", "refs": ["puertas_ref_1.jpg", "puertas_ref_2.jpg", "puertas_ref_3.jpg"], "items": [["Puerta exterior", "Madera pintada (color según proyecto)"], ["Puerta interior baño", "Corrediza embutida de Euca"], ["Puerta interior dormitorio", "Corrediza de abrir de Euca"], ["Otras", "A definir según proyecto"]]}, {"slug": "calefaccion", "title": "Calefacción", "desc": "Sistema, ubicación de equipos, salidas y preinstalaciones.", "cover": "calefaccion_cover.jpg", "refs": ["calefaccion_ref_1.jpg", "calefaccion_ref_2.jpg", "calefaccion_ref_3.jpg"], "items": [["Sistema de calefacción", "A definir según proyecto"], ["Ubicación de equipos", "A definir"], ["Salidas / ventilaciones", "Según sistema elegido"], ["Preinstalaciones", "A cotizar si corresponde"]]}, {"slug": "equipamiento", "title": "Equipamiento", "desc": "Iluminación, cortinas, accesorios y mobiliario complementario.", "cover": "equipamiento_cover.jpg", "refs": ["equipamiento_ref_1.jpg", "equipamiento_ref_2.jpg", "equipamiento_ref_3.jpg"], "items": [["Artefactos de iluminación", "No incluidos / a definir"], ["Cortinas", "No incluidas"], ["Accesorios baño", "No incluidos"], ["Accesorios cocina", "No incluidos"], ["Mobiliario adicional", "A definir"]]}];
+const BASE_FORM = location.origin + location.pathname.replace(/panel\.html$/,'index.html');
+let PASS='';
+
+function keyFor(cat,item,suf){return(cat+'_'+item+'_'+suf).replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]+/g,'_');}
+
+async function entrar(){
+  PASS=document.getElementById('pass').value;
+  const msg=document.getElementById('gate-msg'); msg.textContent='Verificando…';
+  const r=await SB.rpc('admin_listar',{p_pass:PASS});
+  if(r.error){ msg.textContent='Contraseña incorrecta'; return; }
+  document.getElementById('gate').style.display='none';
+  document.getElementById('panel').style.display='block';
+  renderLista(r.data||[]);
+}
+async function recargar(){
+  const r=await SB.rpc('admin_listar',{p_pass:PASS});
+  if(!r.error) renderLista(r.data||[]);
+}
+function toggleNuevo(){ var b=document.getElementById('nuevo-box'); b.style.display=b.style.display==='none'?'flex':'none'; }
+function slug(s){ return s.toLowerCase().replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i').replace(/[óòö]/g,'o').replace(/[úùü]/g,'u').replace(/ñ/g,'n').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+async function crear(){
+  var nombre=document.getElementById('nuevo-nombre').value.trim();
+  if(!nombre) return;
+  var token=slug(nombre)+'-'+Math.random().toString(36).slice(2,7);
+  const r=await SB.rpc('admin_crear',{p_pass:PASS,p_nombre:nombre,p_token:token});
+  if(r.error){ alert('Error: '+r.error.message); return; }
+  document.getElementById('nuevo-nombre').value='';
+  toggleNuevo();
+  recargar();
+}
+function fecha(s){ try{ return new Date(s).toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }catch(e){ return s; } }
+
+function renderLista(rows){
+  var cont=document.getElementById('lista'); cont.innerHTML='';
+  if(!rows.length){ cont.innerHTML='<p class="vacio">Todavía no hay clientes. Creá el primero con "+ Nuevo cliente".</p>'; return; }
+  rows.forEach(function(row){
+    var linkCli=BASE_FORM+'?c='+row.token;
+    var linkNexo=linkCli+'&nexo=1';
+    var card=document.createElement('div'); card.className='cli';
+    card.innerHTML=
+      '<div class="cli-head" onclick="this.parentNode.classList.toggle(\'abierto\')">'+
+        '<div><div class="cli-nombre">'+row.nombre+'</div><div class="cli-meta">Última actividad: '+fecha(row.actualizado)+'</div></div>'+
+        '<div class="cli-acciones">'+
+          '<button class="btn sm" onclick="event.stopPropagation();copiar(\''+linkCli+'\',this)">Copiar link cliente</button>'+
+          '<a class="btn ghost sm" href="'+linkNexo+'" target="_blank" onclick="event.stopPropagation()">Abrir</a>'+
+        '</div>'+
+      '</div>'+
+      '<div class="cli-body">'+
+        '<div class="link-row"><span>Link cliente:</span><code>'+linkCli+'</code></div>'+
+        bitacora(row.datos||{})+
+      '</div>';
+    cont.appendChild(card);
+  });
+}
+
+function bitacora(d){
+  var html='';
+  var hayDatos=false;
+  CATEGORIES.forEach(function(cat){
+    var lineas='';
+    cat.items.forEach(function(it){
+      var item=it[0];
+      var kE=keyFor(cat.slug,item,'eleccion'), kC=keyFor(cat.slug,item,'condicion');
+      var e=d[kE], c=d[kC];
+      if((e&&e.trim())||(c&&c!=='A definir')){
+        hayDatos=true;
+        var partes=[];
+        if(e&&e.trim()) partes.push('<span class="val">'+e+'</span>');
+        if(c&&c!=='A definir') partes.push('<span class="val">['+c+']</span>');
+        lineas+='<div class="dec"><span class="it">'+item+'</span> — '+partes.join(' · ')+'</div>';
+      }
+    });
+    var nc=d[cat.slug+'_comentario_cliente'], nn=d[cat.slug+'_comentario_nexo'];
+    if(lineas||((nc&&nc.trim())||(nn&&nn.trim()))){
+      hayDatos=true;
+      html+='<div class="rubro-bloque"><h4>'+cat.title+'</h4>'+lineas;
+      if(nc&&nc.trim()) html+='<p class="nota">Cliente: '+nc+'</p>';
+      if(nn&&nn.trim()) html+='<p class="nota">Nexo: '+nn+'</p>';
+      html+='</div>';
+    }
+  });
+  return hayDatos?html:'<p class="vacio" style="margin-top:1rem">El cliente todavía no cargó decisiones.</p>';
+}
+
+function copiar(txt,btn){
+  navigator.clipboard.writeText(txt).then(function(){ var t=btn.textContent; btn.textContent='¡Copiado!'; setTimeout(function(){btn.textContent=t;},1500); });
+}
+</script>
+</body>
+</html>
