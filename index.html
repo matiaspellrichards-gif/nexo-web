@@ -89,7 +89,10 @@
   .choice-status-inc { display:inline-block; font-size:0.68rem; color:var(--amber); background:rgba(201,170,130,0.1); border:1px solid rgba(201,170,130,0.25); padding:3px 9px; border-radius:4px; line-height:1.4; }
   .choice-status-extra { display:inline-block; font-size:0.68rem; color:var(--warn); background:rgba(217,139,106,0.08); border:1px solid rgba(217,139,106,0.25); padding:3px 9px; border-radius:4px; line-height:1.4; }
   .cot-thumb { width:34px; height:34px; border-radius:5px; object-fit:cover; cursor:zoom-in; border:1px solid var(--border); flex-shrink:0; }
-  .mini-state { font-size:0.6rem; letter-spacing:0.06em; color:var(--muted); white-space:nowrap; padding-top:4px; }
+  .mini-state { font-size:0.58rem; letter-spacing:0.04em; white-space:nowrap; padding:4px 10px; border-radius:20px; border:1px solid var(--border); color:var(--muted); align-self:start; }
+  .mini-state.definido { color:var(--amber); border-color:rgba(201,170,130,0.4); background:rgba(201,170,130,0.1); }
+  .mini-state.evaluar { color:var(--amber); border-color:rgba(201,170,130,0.3); }
+  .mini-state.recotizar { color:var(--warn); border-color:rgba(217,139,106,0.45); background:rgba(217,139,106,0.1); }
   .choice-main { display:grid; grid-template-columns:1fr; gap:0.8rem; }
   .input-label { font-size:0.55rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); margin-bottom:0.4rem; }
   input, select, textarea { width:100%; font-family:inherit; font-size:0.9rem; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:5px; padding:0.65rem 0.8rem; outline:none; }
@@ -192,7 +195,8 @@ function guardar(){
   },700);
 }
 document.addEventListener('input',function(e){ var el=e.target.closest('[data-key]'); if(!el)return; DATOS[el.dataset.key]=(el.isContentEditable?el.textContent.trim():el.value); guardar(); });
-document.addEventListener('change',function(e){ var el=e.target.closest('[data-key]'); if(!el||el.tagName!=='SELECT')return; DATOS[el.dataset.key]=el.value; guardar(); });
+document.addEventListener('change',function(e){ var el=e.target.closest('[data-key]'); if(!el||el.tagName!=='SELECT')return; DATOS[el.dataset.key]=el.value; if(el.dataset.type==='condicion'){ var ms=document.querySelector('[data-mini="'+el.dataset.key+'"]'); if(ms){ ms.textContent=el.value; ms.className='mini-state '+estadoClase(el.value); } } guardar(); });
+function estadoClase(v){ if(v==="Mantener opción cotizada"||v==="Definido")return "definido"; if(v==="Evaluar alternativa")return "evaluar"; if(v==="Requiere recotización")return "recotizar"; return ""; }
 function keyFor(cat,item,suf){return(cat+'_'+item+'_'+suf).replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]+/g,'_');}
 function isExtra(v){return /a cotizar|a definir|no incluido|no incluida/i.test(v);}
 function abrirCot(src){var lb=document.getElementById("cot-lb");document.getElementById("cot-lb-img").src=src;lb.classList.add("activo");}
@@ -236,7 +240,7 @@ function renderRubro(i){
     var statusTxt=extra?(base.toLowerCase().includes('no incluido')?'⚠ No incluido':'⚠ A cotizar según proyecto'):('✓ Opción base: '+base);
     var estadoHtml=MODO_NEXO?'<div><div class="input-label">Estado</div><select data-key="'+kC+'" data-type="condicion" data-cat="'+cat.slug+'"><option>A definir</option><option>Mantener opción cotizada</option><option>Evaluar alternativa</option><option>Requiere recotización</option><option>Definido</option></select></div>':'';
     var div=document.createElement('div'); div.className='choice';
-    div.innerHTML='<div class="choice-head"><div><div class="choice-title">'+item+'</div><div class="choice-base-row"><span class="'+(extra?'choice-status-extra':'choice-status-inc')+'">'+statusTxt+'</span>'+thumbs+'</div></div><span class="mini-state" data-mini="'+kC+'">A definir</span></div><div class="choice-main"><div><input data-key="'+kE+'" placeholder="'+ph+'"></div>'+estadoHtml+'</div>';
+    div.innerHTML='<div class="choice-head"><div><div class="choice-title">'+item+'</div><div class="choice-base-row"><span class="'+(extra?'choice-status-extra':'choice-status-inc')+'">'+statusTxt+'</span>'+thumbs+'</div></div><span class="mini-state '+estadoClase(DATOS[kC])+'" data-mini="'+kC+'">'+(DATOS[kC]||'A definir')+'</span></div><div class="choice-main"><div><input data-key="'+kE+'" placeholder="'+ph+'"></div>'+estadoHtml+'</div>';
     ch.appendChild(div);
   });
   document.querySelectorAll("#rubro-page [data-key]").forEach(function(el){ var v=DATOS[el.dataset.key]; if(v==null)return; if(el.tagName==="SELECT"||el.tagName==="INPUT"||el.tagName==="TEXTAREA"){el.value=v;} });
