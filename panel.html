@@ -11,7 +11,7 @@
   :root { --bg:#0d0b09; --bg2:#141210; --text:#f0ece5; --amber:#c9aa82; --muted:rgba(240,236,229,0.45); --border:rgba(240,236,229,0.12); --warn:#d98b6a; }
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); }
-  .wrap { max-width:880px; margin:0 auto; padding:2.5rem max(1.4rem,calc(50% - 440px)) 5rem; }
+  .wrap { max-width:1200px; margin:0 auto; padding:2.5rem 1.6rem 5rem; }
   h1 { font-weight:200; font-size:2rem; letter-spacing:-0.01em; }
   .tag { font-size:0.6rem; letter-spacing:0.28em; text-transform:uppercase; color:var(--amber); margin-bottom:0.8rem; }
   input, button { font-family:inherit; font-size:0.9rem; }
@@ -45,6 +45,7 @@
   .dec .val { color:var(--muted); }
   .nota { font-size:0.78rem; color:var(--muted); font-style:italic; margin-top:0.5rem; }
   .vacio { color:var(--muted); font-size:0.8rem; font-style:italic; }
+  @media(min-width:900px){ .cli-body .bitacora-grid { columns:2; column-gap:2.5rem; } .rubro-bloque { break-inside:avoid; } }
 </style>
 </head>
 <body>
@@ -160,7 +161,7 @@ function bitacora(d){
       html+='</div>';
     }
   });
-  return hayDatos?html:'<p class="vacio" style="margin-top:1rem">El cliente todavía no cargó decisiones.</p>';
+  return hayDatos?('<div class="bitacora-grid">'+html+'</div>'):'<p class="vacio" style="margin-top:1rem">El cliente todavía no cargó decisiones.</p>';
 }
 
 function imprimir(idx){
