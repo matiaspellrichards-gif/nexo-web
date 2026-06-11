@@ -45,6 +45,8 @@
   .dec .val { color:var(--muted); }
   .nota { font-size:0.78rem; color:var(--muted); font-style:italic; margin-top:0.5rem; }
   .vacio { color:var(--muted); font-size:0.8rem; font-style:italic; }
+  .volver-btn { display:block; margin:1.6rem auto 0; background:transparent; color:var(--amber); border:1px solid rgba(201,170,130,0.35); border-radius:20px; padding:0.5rem 1.4rem; font-size:0.72rem; letter-spacing:0.08em; cursor:pointer; }
+  .volver-btn:hover { background:rgba(201,170,130,0.1); }
   @media(min-width:900px){ .cli-body .bitacora-grid { columns:2; column-gap:2.5rem; } .rubro-bloque { break-inside:avoid; } }
 </style>
 </head>
@@ -130,6 +132,7 @@ function renderLista(rows){
       '<div class="cli-body">'+
         '<div class="link-row"><span>Link cliente:</span><code>'+linkCli+'</code></div>'+
         bitacora(row.datos||{})+
+        '<button class="volver-btn" onclick="cerrarCli(this)">↑ Volver al listado</button>'+
       '</div>';
     cont.appendChild(card);
   });
@@ -213,6 +216,7 @@ function imprimir(idx){
   w.document.close();
   setTimeout(function(){ w.print(); }, 400);
 }
+function cerrarCli(btn){ var card=btn.closest('.cli'); card.classList.remove('abierto'); card.scrollIntoView({behavior:'smooth',block:'center'}); }
 function copiar(txt,btn){
   navigator.clipboard.writeText(txt).then(function(){ var t=btn.textContent; btn.textContent='¡Copiado!'; setTimeout(function(){btn.textContent=t;},1500); });
 }
