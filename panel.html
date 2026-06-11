@@ -163,6 +163,8 @@ function bitacora(d){
         lineas+='<div class="dec"><span class="it">'+item+'</span> — '+partes.join(' · ')+'</div>';
       }
     });
+    var extrasRaw=d['extras_'+cat.slug];
+    if(extrasRaw){ var extras; try{ extras=JSON.parse(extrasRaw); }catch(ex){ extras=[]; } extras.forEach(function(ex){ var kE=keyFor('x_'+cat.slug,ex.name,'eleccion'), kC=keyFor('x_'+cat.slug,ex.name,'condicion'); var e=d[kE], c=d[kC]; if((e&&e.trim())||(c&&c!=='A definir')){ hayDatos=true; var partes=[]; if(e&&e.trim()) partes.push('<span class="val">'+e+'</span>'); if(c&&c!=='A definir') partes.push('<span class="val">['+c+']</span>'); lineas+='<div class="dec"><span class="it">'+ex.name+'</span> — '+partes.join(' · ')+'</div>'; } }); }
     var nc=d[cat.slug+'_comentario_cliente'], nn=d[cat.slug+'_comentario_nexo'];
     if(lineas||((nc&&nc.trim())||(nn&&nn.trim()))){
       hayDatos=true;
@@ -210,6 +212,8 @@ function imprimir(idx){
       hay=true;
       lineas+='<div class="dec"><span class="it">'+item+'</span><span class="val">'+(e&&e.trim()?e:'—')+'</span><span class="est '+estCls(cnd)+'">'+cnd+'</span></div>';
     });
+    var extrasRaw=d['extras_'+cat.slug];
+    if(extrasRaw){ var extras; try{ extras=JSON.parse(extrasRaw); }catch(ex){ extras=[]; } extras.forEach(function(ex){ var kE=keyFor('x_'+cat.slug,ex.name,'eleccion'), kC=keyFor('x_'+cat.slug,ex.name,'condicion'); var e=d[kE], cnd=d[kC]||'A definir'; hay=true; lineas+='<div class="dec"><span class="it">'+ex.name+'</span><span class="val">'+(e&&e.trim()?e:'—')+'</span><span class="est '+estCls(cnd)+'">'+cnd+'</span></div>'; }); }
     var nc=d[cat.slug+'_comentario_cliente'], nn=d[cat.slug+'_comentario_nexo'];
     if(lineas||(nc&&nc.trim())||(nn&&nn.trim())){
       hay=true;
