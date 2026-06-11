@@ -108,10 +108,12 @@ async function crear(){
 }
 function fecha(s){ try{ return new Date(s).toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }catch(e){ return s; } }
 
+var FILAS=[];
 function renderLista(rows){
+  FILAS=rows;
   var cont=document.getElementById('lista'); cont.innerHTML='';
   if(!rows.length){ cont.innerHTML='<p class="vacio">Todavía no hay clientes. Creá el primero con "+ Nuevo cliente".</p>'; return; }
-  rows.forEach(function(row){
+  rows.forEach(function(row,idx){
     var linkCli=BASE_FORM+'?c='+row.token;
     var linkNexo=linkCli+'&nexo=1';
     var card=document.createElement('div'); card.className='cli';
@@ -121,6 +123,7 @@ function renderLista(rows){
         '<div class="cli-acciones">'+
           '<button class="btn sm" onclick="event.stopPropagation();copiar(\''+linkCli+'\',this)">Copiar link cliente</button>'+
           '<a class="btn ghost sm" href="'+linkNexo+'" target="_blank" onclick="event.stopPropagation()">Abrir</a>'+
+          '<button class="btn ghost sm" onclick="event.stopPropagation();imprimir('+idx+')">Imprimir / PDF</button>'+
         '</div>'+
       '</div>'+
       '<div class="cli-body">'+
@@ -160,6 +163,55 @@ function bitacora(d){
   return hayDatos?html:'<p class="vacio" style="margin-top:1rem">El cliente todavía no cargó decisiones.</p>';
 }
 
+function imprimir(idx){
+  var row=FILAS[idx]; var d=row.datos||{};
+  var hoy=new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
+  var html='<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Nexo - '+row.nombre+'</title>'
+    +'<style>'
+    +'@page{margin:1.8cm}*{margin:0;padding:0;box-sizing:border-box}'
+    +'body{font-family:"DM Sans",Arial,sans-serif;color:#0d0502;font-size:11px;line-height:1.5;padding:24px}'
+    +'.head{border-bottom:2px solid #cea27c;padding-bottom:14px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:flex-end}'
+    +'.head .marca{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:#a8866a;margin-bottom:6px}'
+    +'.head h1{font-size:22px;font-weight:600;letter-spacing:-0.5px}'
+    +'.head .fecha{font-size:9px;color:#7a6a60}'
+    +'.rb{margin-bottom:16px;page-break-inside:avoid}'
+    +'.rb h2{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#a8866a;border-bottom:1px solid #e3dad2;padding-bottom:4px;margin-bottom:6px}'
+    +'.dec{padding:4px 0;border-bottom:1px solid #f0ebe6;display:flex;gap:10px}'
+    +'.dec .it{font-weight:600;min-width:170px}'
+    +'.dec .val{color:#553f31;flex:1}'
+    +'.dec .est{font-size:9px;color:#7a6a60;white-space:nowrap}'
+    +'.nota{font-size:10px;color:#7a6a60;font-style:italic;margin-top:4px}'
+    +'.vacio{color:#7a6a60;font-style:italic}'
+    +'</style></head><body>'
+    +'<div class="head"><div><p class="marca">Nexo · Taller de Casas</p><h1>'+row.nombre+'</h1></div><p class="fecha">Bitácora de proyecto · '+hoy+'</p></div>';
+  var hay=false;
+  CATEGORIES.forEach(function(cat){
+    var lineas='';
+    cat.items.forEach(function(it){
+      var item=it[0];
+      var kE=keyFor(cat.slug,item,'eleccion'), kC=keyFor(cat.slug,item,'condicion');
+      var e=d[kE], cnd=d[kC];
+      if((e&&e.trim())||(cnd&&cnd!=='A definir')){
+        hay=true;
+        lineas+='<div class="dec"><span class="it">'+item+'</span><span class="val">'+(e&&e.trim()?e:'—')+'</span>'+(cnd&&cnd!=='A definir'?'<span class="est">'+cnd+'</span>':'')+'</div>';
+      }
+    });
+    var nc=d[cat.slug+'_comentario_cliente'], nn=d[cat.slug+'_comentario_nexo'];
+    if(lineas||(nc&&nc.trim())||(nn&&nn.trim())){
+      hay=true;
+      html+='<div class="rb"><h2>'+cat.title+'</h2>'+lineas;
+      if(nc&&nc.trim()) html+='<p class="nota">Notas cliente: '+nc+'</p>';
+      if(nn&&nn.trim()) html+='<p class="nota">Notas Nexo: '+nn+'</p>';
+      html+='</div>';
+    }
+  });
+  if(!hay) html+='<p class="vacio">Sin decisiones registradas aún.</p>';
+  html+='</body></html>';
+  var w=window.open('','_blank');
+  w.document.write(html);
+  w.document.close();
+  setTimeout(function(){ w.print(); }, 400);
+}
 function copiar(txt,btn){
   navigator.clipboard.writeText(txt).then(function(){ var t=btn.textContent; btn.textContent='¡Copiado!'; setTimeout(function(){btn.textContent=t;},1500); });
 }
